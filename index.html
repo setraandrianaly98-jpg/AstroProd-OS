@@ -3,39 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AstroProd OS — Station Orbitale de Monitoring</title>
+    <title>AstroProd OS</title>
     <style>
       :root {
-        --bg: #06121d;
-        --bg-deep: #020b13;
-        --panel: rgba(11, 24, 36, 0.72);
-        --panel-strong: rgba(14, 29, 42, 0.88);
-        --border: rgba(118, 214, 255, 0.22);
-        --cyan: #71e8ff;
-        --cyan-strong: #3ed7ff;
+        --bg: #040c16;
+        --bg2: #061b2b;
+        --panel: rgba(9, 23, 37, 0.88);
+        --panel-strong: rgba(11, 27, 41, 0.96);
+        --panel-alt: rgba(14, 28, 42, 0.8);
+        --border: rgba(110, 196, 255, 0.22);
+        --border-strong: rgba(118, 218, 255, 0.4);
+        --cyan: #5fe3ff;
+        --cyan-strong: #4be0ff;
+        --cyan-soft: rgba(79, 224, 255, 0.18);
         --blue: #7aa9ff;
-        --blue-strong: #4f7df7;
-        --ink: #edf8ff;
-        --muted: #9dc0d6;
-        --success: #7af8c8;
-        --warning: #ffd166;
-        --danger: #ff6b7d;
-        --shadow: rgba(0, 0, 0, 0.4);
+        --blue-strong: #3f66f8;
+        --warning: #ffcb62;
+        --warning-soft: rgba(255, 203, 98, 0.15);
+        --danger: #ff6d83;
+        --danger-soft: rgba(255, 109, 131, 0.14);
+        --success: #8af7cc;
+        --text: #edf6ff;
+        --muted: #8caec6;
+        --shadow: rgba(0, 0, 0, 0.45);
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       html, body {
         margin: 0;
         min-height: 100%;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background:
-          radial-gradient(circle at 80% 15%, rgba(68, 132, 255, 0.25), transparent 20%),
-          radial-gradient(circle at 15% 20%, rgba(42, 157, 193, 0.18), transparent 22%),
-          linear-gradient(180deg, #040d18 0%, #071824 100%);
-        color: var(--ink);
+          radial-gradient(circle at 70% 15%, rgba(60, 112, 255, 0.32), transparent 24%),
+          linear-gradient(180deg, #030b13 0%, #061725 100%);
+        color: var(--text);
       }
 
       body {
@@ -48,114 +50,169 @@
         position: fixed;
         inset: 0;
         background-image:
-          radial-gradient(2px 2px at 15% 25%, rgba(255,255,255,0.9) 0%, transparent 55%),
-          radial-gradient(2px 2px at 30% 80%, rgba(160,220,255,0.8) 0%, transparent 50%),
-          radial-gradient(2px 2px at 65% 35%, rgba(255,255,255,0.9) 0%, transparent 60%),
-          radial-gradient(2px 2px at 80% 70%, rgba(160,220,255,0.8) 0%, transparent 50%),
-          radial-gradient(2px 2px at 90% 20%, rgba(255,255,255,0.9) 0%, transparent 55%);
-        opacity: 0.75;
+          radial-gradient(2px 2px at 12% 18%, rgba(255,255,255,0.8), transparent 60%),
+          radial-gradient(2px 2px at 28% 62%, rgba(170,220,255,0.7), transparent 60%),
+          radial-gradient(2px 2px at 58% 32%, rgba(255,255,255,0.7), transparent 55%),
+          radial-gradient(2px 2px at 75% 72%, rgba(180,230,255,0.8), transparent 65%),
+          radial-gradient(2px 2px at 88% 22%, rgba(255,255,255,0.76), transparent 60%);
+        opacity: 0.8;
         pointer-events: none;
       }
 
       body::after {
         content: "";
         position: fixed;
-        right: -8%;
+        right: -12%;
         bottom: -16%;
-        width: 62vw;
-        height: 62vw;
+        width: 58vw;
+        height: 58vw;
         min-width: 420px;
         min-height: 420px;
         border-radius: 50%;
         background:
-          radial-gradient(circle at 34% 30%, rgba(115, 214, 255, 0.55), rgba(16, 82, 135, 0.85) 20%, rgba(7, 28, 50, 0.92) 45%, rgba(2, 14, 25, 0.98) 62%),
-          linear-gradient(120deg, rgba(28,110,163,0.8), rgba(4,17,27,0.3));
-        box-shadow: inset -25px -20px 30px rgba(2, 12, 20, 0.9), inset 28px 24px 30px rgba(118, 214, 255, 0.18), 0 0 50px rgba(45, 152, 255, 0.2);
+          radial-gradient(circle at 36% 26%, rgba(120,220,255,0.8), rgba(21, 95, 165, 0.66) 20%, rgba(11,57,96,0.9) 42%, rgba(4,15,26,0.96) 62%),
+          linear-gradient(120deg, rgba(28,105,164,0.7), rgba(3,11,19,0.2));
+        box-shadow: inset -22px -22px 30px rgba(3,10,17,0.88), inset 22px 18px 30px rgba(132, 208, 255, 0.15), 0 0 55px rgba(49, 128, 255, 0.2);
         z-index: 0;
-        animation: earthDrift 18s ease-in-out infinite alternate;
-        opacity: 0.92;
         pointer-events: none;
+        animation: drift 16s ease-in-out infinite alternate;
       }
 
-      @keyframes earthDrift {
+      @keyframes drift {
         0% { transform: translate3d(0, 0, 0) scale(1); }
-        100% { transform: translate3d(-14px, -12px, 0) scale(1.04); }
+        100% { transform: translate3d(-12px, -10px, 0) scale(1.04); }
       }
 
-      .app-shell {
+      .app {
         position: relative;
         z-index: 1;
-        width: min(1500px, calc(100% - 24px));
-        margin: 20px auto 32px;
+        width: min(1360px, calc(100% - 26px));
+        margin: 14px auto 28px;
       }
 
       .topbar {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 14px 18px;
-        margin-bottom: 20px;
+        justify-content: space-between;
+        height: 64px;
+        padding: 0 18px 0 14px;
+        border-radius: 0 0 16px 16px;
         border: 1px solid var(--border);
-        border-radius: 18px;
-        background: rgba(10, 21, 29, 0.52);
+        border-top: none;
+        background: rgba(11, 22, 33, 0.7);
         backdrop-filter: blur(12px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.18);
       }
 
       .brand {
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        font-size: clamp(1.1rem, 1.4vw, 1.5rem);
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
 
-      .brand span {
+      .brand-mark {
+        width: 18px;
+        height: 18px;
+        position: relative;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ffd767, #ff8a1b);
+        box-shadow: 0 0 16px rgba(255, 182, 80, 0.6);
+      }
+
+      .brand-mark::before,
+      .brand-mark::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent 0 15%, rgba(255,255,255,0.7) 15% 22%, transparent 22% 100%);
+        border-radius: 50%;
+      }
+
+      .brand-mark::after {
+        transform: rotate(90deg);
+      }
+
+      .brand-text {
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        font-size: 1.12rem;
+      }
+
+      .brand-sub {
+        display: block;
         color: var(--muted);
-        font-size: 0.72rem;
-        letter-spacing: 0.08em;
-        margin-left: 12px;
-        text-transform: none;
+        font-size: 0.52rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-top: 2px;
       }
 
-      .status-pill {
-        border: 1px solid rgba(113, 232, 255, 0.38);
-        background: rgba(9, 35, 50, 0.45);
-        color: var(--cyan);
-        padding: 8px 12px;
-        border-radius: 999px;
-        font-size: 0.76rem;
-        letter-spacing: 0.08em;
+      .status {
+        color: var(--muted);
+        font-size: 0.64rem;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
+        opacity: 0.9;
+      }
+
+      .status::before {
+        content: "";
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        margin-right: 8px;
+        border-radius: 50%;
+        background: #7ef7c6;
+        box-shadow: 0 0 12px rgba(126,247,198,0.8);
+        vertical-align: middle;
+      }
+
+      .panel {
+        background: linear-gradient(180deg, rgba(12, 24, 35, 0.78), rgba(9, 20, 31, 0.9));
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 16px 30px rgba(0,0,0,0.18);
       }
 
       .layout {
         display: grid;
-        grid-template-columns: minmax(300px, 1.2fr) minmax(320px, 1fr);
-        gap: 20px;
-        align-items: start;
+        grid-template-columns: minmax(0, 1.8fr) minmax(330px, 0.95fr);
+        gap: 18px;
+        margin-top: 16px;
       }
 
-      .card {
-        background: linear-gradient(180deg, rgba(14, 28, 40, 0.75), rgba(9, 18, 27, 0.8));
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
-        backdrop-filter: blur(10px);
+      .left-panel {
+        padding: 14px 14px 10px;
       }
 
-      .panel {
-        padding: 18px 18px 16px;
+      .right-stack {
+        display: grid;
+        gap: 18px;
       }
 
-      .panel h2 {
-        margin: 0 0 16px;
-        font-size: 1.05rem;
-        letter-spacing: 0.04em;
+      .section-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 12px;
+        font-size: 0.9rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
-        color: var(--cyan);
+        color: var(--text);
       }
 
-      .form-grid {
+      .section-head::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--cyan);
+        box-shadow: 0 0 10px rgba(95, 227, 255, 0.9);
+      }
+
+      .production-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px 14px;
@@ -167,212 +224,236 @@
         gap: 6px;
       }
 
-      .field.full {
-        grid-column: 1 / -1;
-      }
-
-      label {
+      .field label {
         color: var(--muted);
-        font-size: 0.76rem;
-        letter-spacing: 0.08em;
+        font-size: 0.72rem;
         text-transform: uppercase;
-      }
-
-      input, select, button {
-        font: inherit;
+        letter-spacing: 0.1em;
       }
 
       input, select {
         width: 100%;
-        border: 1px solid rgba(113, 232, 255, 0.18);
-        background: rgba(7, 18, 28, 0.7);
-        color: var(--ink);
-        padding: 10px 12px;
+        border: 1px solid rgba(118, 218, 255, 0.18);
+        background: rgba(8, 21, 31, 0.8);
+        color: var(--text);
         border-radius: 10px;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        padding: 10px 12px;
+        font: inherit;
+        min-height: 40px;
       }
 
       input:focus, select:focus {
         outline: none;
-        border-color: rgba(113, 232, 255, 0.7);
-        box-shadow: 0 0 0 3px rgba(113, 232, 255, 0.12);
+        border-color: rgba(118, 218, 255, 0.7);
+        box-shadow: 0 0 0 3px rgba(95, 227, 255, 0.08);
       }
 
-      .checkbox-row {
+      input::placeholder { color: rgba(237,246,255,0.46); }
+
+      .checkbox-wrap {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        border: 1px solid rgba(113, 232, 255, 0.16);
-        background: rgba(7, 18, 28, 0.55);
+        gap: 10px;
+        border: 1px solid rgba(118, 218, 255, 0.18);
+        background: rgba(8, 21, 31, 0.8);
         border-radius: 10px;
-        padding: 10px 12px;
-        min-height: 44px;
+        min-height: 40px;
+        padding: 0 12px;
       }
 
-      .checkbox-row label {
+      .checkbox-wrap label {
         margin: 0;
-        letter-spacing: 0.04em;
+        color: var(--text);
+        letter-spacing: 0.02em;
         text-transform: none;
-        font-size: 0.92rem;
-        color: var(--ink);
+        font-size: 0.9rem;
       }
 
-      .checkbox-row input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
+      .checkbox-wrap input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
         accent-color: var(--cyan-strong);
+        margin: 0;
       }
 
-      .button-row {
+      .action-row {
         display: flex;
         gap: 10px;
-        margin-top: 16px;
         flex-wrap: wrap;
+        margin-top: 14px;
       }
 
       button {
         border: none;
         border-radius: 10px;
-        padding: 11px 16px;
-        font-weight: 700;
-        letter-spacing: 0.06em;
+        padding: 10px 14px;
+        font: inherit;
+        font-weight: 800;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         cursor: pointer;
-        transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+        transition: transform 0.15s ease, filter 0.15s ease;
       }
 
-      button:hover {
-        transform: translateY(-1px);
-        filter: brightness(1.05);
-      }
+      button:hover { transform: translateY(-1px); filter: brightness(1.04); }
 
       .primary-btn {
         background: linear-gradient(135deg, var(--cyan-strong), var(--blue-strong));
-        color: #02141f;
-        box-shadow: 0 10px 18px rgba(62, 215, 255, 0.22);
+        color: #051b2a;
+        box-shadow: 0 10px 18px rgba(79, 224, 255, 0.2);
       }
 
       .secondary-btn {
-        background: rgba(133, 182, 253, 0.12);
-        color: var(--ink);
-        border: 1px solid rgba(133, 182, 253, 0.22);
+        background: rgba(122, 169, 255, 0.08);
+        border: 1px solid rgba(122, 169, 255, 0.22);
+        color: var(--text);
       }
 
       .ghost-btn {
-        background: rgba(255,255,255,0.04);
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.12);
         color: var(--muted);
-        border: 1px solid rgba(255,255,255,0.1);
-        letter-spacing: 0.03em;
       }
 
-      .danger-btn {
-        background: rgba(255, 107, 125, 0.12);
-        border: 1px solid rgba(255, 107, 125, 0.25);
-        color: #ffdfe5;
-      }
-
-      .results {
-        margin-top: 18px;
+      .metric-grid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
+        margin-top: 16px;
       }
 
-      .metric {
-        background: rgba(7, 17, 25, 0.7);
-        border: 1px solid rgba(113, 232, 255, 0.16);
-        border-radius: 12px;
-        padding: 12px;
+      .metric-box {
+        background: rgba(9, 21, 31, 0.8);
+        border: 1px solid rgba(118, 218, 255, 0.14);
+        border-radius: 10px;
+        padding: 10px 12px;
+        min-height: 74px;
       }
 
-      .metric .label {
+      .metric-box .label {
         display: block;
         color: var(--muted);
         text-transform: uppercase;
-        font-size: 0.65rem;
-        letter-spacing: 0.08em;
+        font-size: 0.58rem;
+        letter-spacing: 0.12em;
         margin-bottom: 8px;
       }
 
-      .metric .value {
+      .metric-box .value {
         display: block;
-        font-size: clamp(1.05rem, 1.7vw, 1.7rem);
+        color: var(--text);
+        font-size: clamp(1rem, 1.4vw, 1.5rem);
         font-weight: 800;
-        line-height: 1.2;
+        line-height: 1.1;
       }
 
-      .value.cyan { color: var(--cyan); }
-      .value.success { color: var(--success); }
-      .value.warning { color: var(--warning); }
-      .value.danger { color: var(--danger); }
+      .metric-box.cyan .value { color: var(--cyan); }
+      .metric-box.warning .value { color: var(--warning); }
+      .metric-box.success .value { color: var(--success); }
+      .metric-box.danger .value { color: var(--danger); }
 
-      .right-panel {
-        display: grid;
-        gap: 20px;
+      .small-card {
+        padding: 14px 14px 12px;
       }
 
-      .mini-grid {
+      .capacity-form {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
+        gap: 12px 10px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
       }
 
       .capacity-output {
-        margin-top: 16px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 10px;
-        padding: 14px 16px;
-        background: rgba(7, 19, 29, 0.8);
-        border: 1px solid rgba(113, 232, 255, 0.17);
-        border-radius: 12px;
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(79, 224, 255, 0.12);
+        border: 1px solid rgba(118, 218, 255, 0.25);
+      }
+
+      .capacity-output span {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
       }
 
       .capacity-output strong {
-        font-size: 1.5rem;
         color: var(--cyan);
+        font-size: 1.2rem;
       }
 
-      .future-list {
+      .future-list { display: grid; gap: 10px; margin-top: 12px; }
+
+      .future-form {
         display: grid;
-        gap: 10px;
+        grid-template-columns: 1.3fr 1fr 1fr;
+        gap: 8px;
+      }
+
+      .future-form .field {
+        min-width: 0;
+      }
+
+      .future-add {
         margin-top: 10px;
+      }
+
+      .future-empty {
+        padding: 12px 8px;
+        border: 1px dashed rgba(118, 218, 255, 0.2);
+        border-radius: 10px;
+        color: var(--muted);
+        text-align: center;
+        background: rgba(12, 22, 33, 0.3);
       }
 
       .future-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-        padding: 10px 12px;
-        border-radius: 12px;
-        background: rgba(7, 18, 28, 0.76);
-        border: 1px solid rgba(113, 232, 255, 0.12);
+        gap: 8px;
+        padding: 8px 10px;
+        background: rgba(10, 21, 31, 0.85);
+        border: 1px solid rgba(118, 218, 255, 0.12);
+        border-radius: 10px;
       }
 
-      .sale-text {
-        flex: 1 1 auto;
+      .future-text {
         display: flex;
         flex-direction: column;
-        gap: 3px;
+        gap: 2px;
+        min-width: 0;
       }
 
-      .sale-name {
+      .future-name {
         font-weight: 700;
-        color: var(--ink);
+        font-size: 0.92rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      .sale-meta {
+      .future-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         color: var(--muted);
-        font-size: 0.8rem;
+        font-size: 0.72rem;
       }
 
-      .sale-volume {
+      .future-volume {
         color: var(--warning);
         font-weight: 800;
-        font-size: 0.92rem;
+        font-size: 0.8rem;
       }
 
       .future-actions {
@@ -382,30 +463,57 @@
       }
 
       .mini-btn {
-        padding: 7px 8px;
-        font-size: 0.7rem;
+        padding: 6px 8px;
+        font-size: 0.62rem;
+        letter-spacing: 0.06em;
         border-radius: 8px;
-        letter-spacing: 0.04em;
       }
 
       .history-panel {
-        margin-top: 22px;
-        padding: 18px;
+        margin-top: 18px;
+        padding: 14px 14px 12px;
       }
 
-      .history-head {
+      .history-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 16px;
-        margin-bottom: 14px;
+        gap: 14px;
+        margin-bottom: 12px;
+      }
+
+      .history-head-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+      }
+
+      .history-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         flex-wrap: wrap;
+      }
+
+      .history-summary {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+        color: var(--muted);
+        font-size: 0.72rem;
+        letter-spacing: 0.04em;
+      }
+
+      .history-summary strong {
+        color: var(--text);
       }
 
       .history-tools {
         display: flex;
-        gap: 10px;
         align-items: center;
+        gap: 8px;
         flex-wrap: wrap;
       }
 
@@ -413,133 +521,148 @@
         min-width: 180px;
       }
 
-      .day-group {
-        border: 1px solid rgba(113, 232, 255, 0.12);
-        background: rgba(8, 18, 28, 0.55);
-        border-radius: 16px;
-        padding: 14px;
-        margin-top: 12px;
+      .history-date-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
       }
 
-      .day-header {
+      .history-date-search input {
+        flex: 1;
+      }
+
+      .day-group {
+        margin-top: 12px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: rgba(8, 20, 30, 0.72);
+        overflow: hidden;
+      }
+
+      .day-group-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 12px;
-        flex-wrap: wrap;
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid rgba(113, 232, 255, 0.08);
+        padding: 10px 12px 8px;
+        border-bottom: 1px solid rgba(118, 218, 255, 0.12);
+        background: rgba(12, 28, 40, 0.5);
       }
 
-      .day-title {
-        font-size: 1.05rem;
+      .day-group-header > div:first-child {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.88rem;
         font-weight: 700;
         color: var(--cyan);
       }
 
-      .day-dashboard {
+      .day-group-header .left-tag {
+        color: var(--muted);
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .dashboard-mini {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
         flex: 1;
+        max-width: 720px;
       }
 
-      .dash-item {
-        background: rgba(7, 18, 28, 0.7);
-        border: 1px solid rgba(113, 232, 255, 0.12);
-        border-radius: 10px;
+      .dashboard-mini .dash {
+        background: rgba(8, 19, 29, 0.8);
+        border: 1px solid rgba(118, 218, 255, 0.12);
+        border-radius: 8px;
         padding: 8px 10px;
         text-align: center;
       }
 
-      .dash-item .label {
+      .dashboard-mini .dash .label {
         display: block;
         color: var(--muted);
-        font-size: 0.65rem;
+        font-size: 0.56rem;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
-        letter-spacing: 0.07em;
-        margin-bottom: 4px;
+        margin-bottom: 3px;
       }
 
-      .dash-item .value {
+      .dashboard-mini .dash .value {
         display: block;
-        font-weight: 700;
-        font-size: 0.95rem;
         color: var(--cyan);
-      }
-
-      .day-actions {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
+        font-weight: 800;
+        font-size: 0.86rem;
       }
 
       .day-list {
         list-style: none;
         margin: 0;
-        padding: 0;
+        padding: 10px 12px 14px;
         display: grid;
-        gap: 10px;
+        gap: 8px;
       }
 
       .day-item {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        gap: 12px;
+        justify-content: space-between;
+        gap: 10px;
         padding: 10px 12px;
-        background: rgba(10, 24, 36, 0.8);
-        border-radius: 12px;
-        border: 1px solid rgba(113, 232, 255, 0.1);
+        border-radius: 10px;
+        background: rgba(10, 21, 31, 0.8);
+        border: 1px solid rgba(118, 218, 255, 0.1);
       }
 
       .day-item-main {
-        flex: 1 1 auto;
+        flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 3px;
+        gap: 2px;
       }
 
       .day-item .name {
         font-weight: 700;
+        font-size: 0.94rem;
       }
 
       .day-item .meta {
         color: var(--muted);
-        font-size: 0.8rem;
+        font-size: 0.7rem;
+        line-height: 1.3;
       }
 
-      .rest {
-        font-size: 0.85rem;
+      .day-item .rest {
         color: var(--warning);
         font-weight: 800;
+        font-size: 0.78rem;
+        margin-right: 8px;
       }
 
-      .advice-empty {
-        color: var(--muted);
-        text-align: center;
-        padding: 20px 10px;
-        border: 1px dashed rgba(113, 232, 255, 0.18);
-        border-radius: 12px;
-        background: rgba(7, 18, 28, 0.4);
+      .day-item .actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
       }
 
       .toast {
         position: fixed;
-        right: 20px;
-        bottom: 20px;
-        z-index: 50;
-        background: rgba(9, 28, 41, 0.92);
-        border: 1px solid rgba(113, 232, 255, 0.22);
-        color: var(--ink);
+        right: 22px;
+        bottom: 22px;
         padding: 12px 14px;
-        border-radius: 12px;
-        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.32);
+        border-radius: 10px;
+        background: rgba(7, 28, 41, 0.95);
+        border: 1px solid rgba(118, 218, 255, 0.25);
+        box-shadow: 0 18px 36px rgba(0,0,0,0.38);
+        color: var(--text);
         opacity: 0;
         transform: translateY(12px);
-        pointer-events: none;
         transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+        z-index: 50;
       }
 
       .toast.show {
@@ -547,192 +670,160 @@
         transform: translateY(0);
       }
 
-      @media (max-width: 980px) {
-        .layout {
-          grid-template-columns: 1fr;
-        }
-
-        .right-panel {
-          grid-template-columns: 1fr;
-        }
-
-        .result-grid {
-          grid-template-columns: 1fr 1fr;
-        }
+      @media (max-width: 1100px) {
+        .layout { grid-template-columns: 1fr; }
+        .right-stack { grid-template-columns: 1fr; }
       }
 
-      @media (max-width: 780px) {
-        .day-header {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 10px;
-        }
+      @media (max-width: 740px) {
+        .production-grid,
+        .capacity-form,
+        .future-form,
+        .metric-grid,
+        .dashboard-mini {
+          grid-template-columns: 1fr; }
 
-        .day-dashboard {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          width: 100%;
-        }
-
-        .day-actions {
-          width: 100%;
-        }
-
-        .day-actions > * {
-          flex: 1;
-        }
-      }
-
-      @media (max-width: 680px) {
-        .topbar {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 10px;
-        }
-
-        .form-grid,
-        .results,
-        .mini-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .button-row,
+        .history-top,
         .history-tools,
-        .day-actions,
-        .future-actions {
-          width: 100%;
-        }
-
-        .button-row > *,
-        .history-tools > *,
-        .day-actions > *,
-        .future-actions > * {
-          flex: 1 1 auto;
-        }
-
+        .day-group-header,
         .day-item {
           flex-direction: column;
           align-items: flex-start;
         }
 
-        .day-dashboard {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
+        .history-tools { width: 100%; }
+        .history-tools > * { width: 100%; }
+        .day-item .actions { width: 100%; }
+        .day-item .actions > * { flex: 1; }
       }
     </style>
   </head>
   <body>
-    <div class="app-shell">
+    <div class="app">
       <header class="topbar">
-        <div class="brand">ASTROPROD OS <span>Station Orbitale de Monitoring</span></div>
-        <div class="status-pill">Mission actif</div>
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <div class="brand-text">AstroProd OS</div>
+            <span class="brand-sub">Station orbitale de monitoring</span>
+          </div>
+        </div>
+        <div class="status">Système opérationnel • stockage local</div>
       </header>
 
       <main class="layout">
-        <section class="card panel">
-          <h2>Calculer une production</h2>
+        <section class="panel left-panel">
+          <h2 class="section-head">Calculer une production</h2>
 
-          <form id="productionForm">
-            <div class="form-grid">
-              <div class="field">
-                <label for="productionDate">Date</label>
-                <input id="productionDate" name="productionDate" type="date" />
-              </div>
-
-              <div class="field">
-                <label for="saleName">Nom de vente</label>
-                <input id="saleName" name="saleName" type="text" placeholder="Ex. Nike" />
-              </div>
-
-              <div class="field full">
-                <label for="productionCode">Type de code / Objectif</label>
-                <select id="productionCode" name="productionCode">
-                  <option value="AL SIMPLE">AL SIMPLE — 10 références/heure</option>
-                  <option value="AL COMPLEXE">AL COMPLEXE — 4,29 références/heure</option>
-                  <option value="FR SIMPLE">FR SIMPLE — 15 références/heure</option>
-                  <option value="FR COMPLEXE">FR COMPLEXE — 6,29 références/heure</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="totalRefs">Nombre total de références</label>
-                <input id="totalRefs" name="totalRefs" type="number" min="0" step="1" value="0" />
-              </div>
-
-              <div class="field">
-                <label for="productionStart">Heure de début</label>
-                <input id="productionStart" name="productionStart" type="time" />
-              </div>
-
-              <div class="field">
-                <label for="productionEnd">Heure de fin réelle</label>
-                <input id="productionEnd" name="productionEnd" type="time" />
-              </div>
-
-              <div class="field">
-                <label for="remainingRefsInput">Références restantes</label>
-                <input id="remainingRefsInput" name="remainingRefsInput" type="number" min="0" step="1" value="0" />
-              </div>
-
-              <div class="field">
-                <div class="checkbox-row">
-                  <label for="pause30">Pause 30 min</label>
-                  <input id="pause30" name="pause30" type="checkbox" />
-                </div>
-              </div>
+          <div class="production-grid">
+            <div class="field">
+              <label for="productionDate">Date</label>
+              <input id="productionDate" type="date" />
             </div>
 
-            <div class="button-row">
-              <button type="button" class="primary-btn" id="calculateBtn">Calculer</button>
-              <button type="button" class="secondary-btn" id="saveProductionBtn">Enregistrer la production</button>
-              <button type="button" class="ghost-btn" id="resetFormBtn">Réinitialiser</button>
+            <div class="field">
+              <label for="saleName">Nom de vente</label>
+              <input id="saleName" type="text" placeholder="Ex. Nike" />
             </div>
-          </form>
 
-          <div class="results" id="resultsPanel">
-            <div class="metric">
-              <span class="label">Temps théorique</span>
-              <span id="theoreticalTimeDisplay" class="value cyan">0h00</span>
+            <div class="field full" style="grid-column:1 / -1;">
+              <label for="productionCode">Type de code / Objectif</label>
+              <select id="productionCode">
+                <option value="AL SIMPLE">AL SIMPLE</option>
+                <option value="AL COMPLEXE">AL COMPLEXE</option>
+                <option value="FR SIMPLE">FR SIMPLE</option>
+                <option value="FR COMPLEXE">FR COMPLEXE</option>
+              </select>
             </div>
-            <div class="metric">
+
+            <div class="field">
+              <label for="totalRefs">Nombre total de références</label>
+              <input id="totalRefs" type="number" min="0" step="1" value="80" />
+            </div>
+
+            <div class="field">
+              <label for="productionStart">Heure de début</label>
+              <input id="productionStart" type="time" value="12:00" />
+            </div>
+
+            <div class="field">
+              <label for="productionEnd">Heure de fin réelle</label>
+              <input id="productionEnd" type="time" value="19:00" />
+            </div>
+
+            <div class="field">
+              <label for="remainingRefsInput">Références restantes</label>
+              <input id="remainingRefsInput" type="number" min="0" step="1" value="15" />
+            </div>
+
+            <div class="field">
+              <div class="checkbox-wrap">
+                <label for="pause30">Pause 30 min</label>
+                <input id="pause30" type="checkbox" checked />
+              </div>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button type="button" id="calculateBtn" class="primary-btn">Calculer</button>
+            <button type="button" id="saveProductionBtn" class="secondary-btn">Enregistrer la production</button>
+            <button type="button" id="resetFormBtn" class="ghost-btn">Réinitialiser</button>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric-box success">
               <span class="label">Fin prévue</span>
-              <span id="plannedEndDisplay" class="value success">0h00</span>
+              <span id="plannedEndDisplay" class="value">20h30</span>
             </div>
-            <div class="metric">
+            <div class="metric-box warning">
               <span class="label">Références à traiter</span>
-              <span id="referencesProducedDisplay" class="value warning">0</span>
+              <span id="referencesProducedDisplay" class="value">65 réf.</span>
             </div>
-            <div class="metric">
-              <span class="label">Références restantes</span>
-              <span id="remainingRefsDisplay" class="value danger">0</span>
+            <div class="metric-box cyan">
+              <span class="label">Temps théorique</span>
+              <span id="theoreticalTimeDisplay" class="value">8h00</span>
             </div>
-            <div class="metric">
-              <span class="label">Temps réel</span>
-              <span id="realTimeDisplay" class="value cyan">0h00</span>
+            <div class="metric-box cyan">
+              <span class="label">Temps réel de production</span>
+              <span id="realTimeDisplay" class="value">6h30</span>
             </div>
-            <div class="metric">
+
+            <div class="metric-box success">
               <span class="label">Performance de la vente</span>
-              <span id="performanceDisplay" class="value success">0%</span>
+              <span id="performanceDisplay" class="value">123%</span>
+            </div>
+            <div class="metric-box danger">
+              <span class="label">Références restantes</span>
+              <span id="remainingRefsDisplay" class="value">15 réf.</span>
+            </div>
+            <div class="metric-box cyan">
+              <span class="label">Objectif</span>
+              <span id="goalDisplay" class="value">10 réf/h</span>
+            </div>
+            <div class="metric-box success">
+              <span class="label">Références réellement produites</span>
+              <span id="producedDisplay" class="value">65 réf.</span>
             </div>
           </div>
         </section>
 
-        <div class="right-panel">
-          <section class="card panel">
-            <h2>Simulation de capacité</h2>
+        <div class="right-stack">
+          <section class="panel small-card">
+            <h2 class="section-head">Simulation de capacité</h2>
 
-            <div class="form-grid">
+            <div class="capacity-form">
               <div class="field">
                 <label for="capacityStart">Heure de début</label>
-                <input id="capacityStart" type="time" />
+                <input id="capacityStart" type="time" value="08:00" />
               </div>
 
               <div class="field">
                 <label for="capacityEnd">Heure de fin</label>
-                <input id="capacityEnd" type="time" />
+                <input id="capacityEnd" type="time" value="11:30" />
               </div>
 
               <div class="field full">
-                <label for="capacityCode">Code de production</label>
+                <label for="capacityCode">Code</label>
                 <select id="capacityCode">
                   <option value="AL SIMPLE">AL SIMPLE</option>
                   <option value="AL COMPLEXE">AL COMPLEXE</option>
@@ -742,38 +833,33 @@
               </div>
 
               <div class="field full">
-                <div class="checkbox-row">
+                <div class="checkbox-wrap">
                   <label for="capacityPause">Pause 30 min</label>
-                  <input id="capacityPause" type="checkbox" />
+                  <input id="capacityPause" type="checkbox" checked />
                 </div>
               </div>
             </div>
 
-            <div class="button-row">
-              <button type="button" class="primary-btn" id="capacityBtn">Calculer</button>
+            <div class="action-row">
+              <button type="button" id="capacityBtn" class="primary-btn">Calculer</button>
             </div>
 
             <div class="capacity-output">
               <span>Références estimées</span>
-              <strong id="capacityOutput">0</strong>
+              <strong id="capacityOutput">35 réf.</strong>
             </div>
           </section>
 
-          <section class="card panel">
-            <h2>Ventes à venir</h2>
+          <section class="panel small-card">
+            <h2 class="section-head">Ventes à venir</h2>
 
-            <div class="form-grid">
+            <div class="future-form">
               <div class="field">
                 <label for="futureName">Nom de vente</label>
-                <input id="futureName" type="text" placeholder="Ex. Adidas" />
+                <input id="futureName" type="text" placeholder="Nike" />
               </div>
 
               <div class="field">
-                <label for="futureVolume">Nombre de références / volume</label>
-                <input id="futureVolume" type="number" min="0" step="1" value="0" />
-              </div>
-
-              <div class="field full">
                 <label for="futureCode">Code de vente</label>
                 <select id="futureCode">
                   <option value="AL SIMPLE">AL SIMPLE</option>
@@ -782,10 +868,15 @@
                   <option value="FR COMPLEXE">FR COMPLEXE</option>
                 </select>
               </div>
+
+              <div class="field">
+                <label for="futureVolume">Nombre de références</label>
+                <input id="futureVolume" type="number" min="0" step="1" value="15" />
+              </div>
             </div>
 
-            <div class="button-row">
-              <button type="button" class="primary-btn" id="addFutureSaleBtn">Ajouter</button>
+            <div class="action-row future-add">
+              <button type="button" id="addFutureSaleBtn" class="secondary-btn">Ajouter</button>
             </div>
 
             <div id="futureSalesList" class="future-list"></div>
@@ -793,14 +884,28 @@
         </div>
       </main>
 
-      <section class="card history-panel">
-        <div class="history-head">
-          <h2>Historique des productions</h2>
-          <div class="history-tools">
-            <input id="historySearch" type="search" placeholder="Rechercher une vente" />
-            <input id="historyDateFilter" type="date" />
-            <button type="button" class="secondary-btn" id="closeDayBtn">Clôturer la journée</button>
+      <section class="panel history-panel">
+        <div class="history-top">
+          <div class="history-head-wrap">
+            <h2 class="section-head" style="margin:0;">Historique des productions</h2>
           </div>
+
+          <div class="history-left">
+            <div class="history-summary">
+              <span>Ventes : <strong id="daySalesCount">1</strong></span>
+              <span>Heure effective journaliere : <strong id="dayRealTime">10h 30</strong></span>
+              <span>Heures normales : <strong id="dayNormalHours">8h 00</strong></span>
+              <span>Heures supplémentaires : <strong id="dayExtraHours">2h 30</strong></span>
+              <span>Reste : <strong id="dayRestTotal">0</strong></span>
+            </div>
+            <button type="button" id="closeDayBtn" class="secondary-btn">Clôturer la journée</button>
+          </div>
+        </div>
+
+        <div class="history-date-search">
+          <input id="historySearch" type="search" placeholder="Rechercher une vente traitée..." />
+          <input id="historyDateFilter" type="date" />
+          <button type="button" id="filterBtn" class="secondary-btn">Tout afficher</button>
         </div>
 
         <div id="historyContainer"></div>
@@ -823,7 +928,6 @@
         'FR COMPLEXE': 6.29
       };
 
-      const productionForm = document.getElementById('productionForm');
       const productionDateInput = document.getElementById('productionDate');
       const saleNameInput = document.getElementById('saleName');
       const productionCodeSelect = document.getElementById('productionCode');
@@ -841,8 +945,7 @@
 
       let state = {
         productions: [],
-        futureSales: [],
-        closedDays: []
+        futureSales: []
       };
 
       function safeRead(key, fallback) {
@@ -869,14 +972,17 @@
         toast.textContent = message;
         toast.classList.add('show');
         clearTimeout(showToast.timeoutId);
-        showToast.timeoutId = setTimeout(() => toast.classList.remove('show'), 2000);
+        showToast.timeoutId = setTimeout(() => toast.classList.remove('show'), 2200);
       }
 
-      function setDefaultDate() {
-        const now = new Date();
-        const iso = now.toISOString().slice(0, 10);
-        productionDateInput.value = iso;
-        historyDateFilterInput.value = iso;
+      function formatDateLabel(dateString) {
+        if (!dateString) return 'Date inconnue';
+        const date = new Date(dateString + 'T00:00:00');
+        return new Intl.DateTimeFormat('fr-FR', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        }).format(date);
       }
 
       function parseTimeToMinutes(value) {
@@ -889,21 +995,11 @@
         const safeMinutes = Math.max(0, Math.round(minutes));
         const hours = Math.floor(safeMinutes / 60);
         const mins = safeMinutes % 60;
-        return `${hours}h${String(mins).padStart(2, '0')}`;
+        return `${hours}h ${String(mins).padStart(2, '0')}`;
       }
 
       function formatNumber(value) {
         return Number.isFinite(value) ? Math.round(value) : 0;
-      }
-
-      function formatDateLabel(dateString) {
-        if (!dateString) return 'Date inconnue';
-        const date = new Date(dateString + 'T00:00:00');
-        return new Intl.DateTimeFormat('fr-FR', {
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric'
-        }).format(date);
       }
 
       function getGoalForCode(code) {
@@ -917,8 +1013,6 @@
         const startMinutes = parseTimeToMinutes(data.startTime);
         const endMinutes = parseTimeToMinutes(data.endTime);
         const pauseMinutes = data.pause ? 30 : 0;
-
-        const plannedEndMinutes = startMinutes + theoreticalMinutes + (data.pause ? 30 : 0);
         const realProductionMinutes = Math.max(0, endMinutes - startMinutes - pauseMinutes);
         const producedRefs = goal > 0 ? (realProductionMinutes * goal) / 60 : 0;
         const remainingRefs = Math.max(0, totalRefs - producedRefs);
@@ -927,19 +1021,11 @@
         return {
           goal,
           theoreticalMinutes,
-          plannedEndMinutes,
           realProductionMinutes,
           producedRefs,
           remainingRefs,
           performance
         };
-      }
-
-      function formatHoursMinutesFromMinutes(minutes) {
-        const clamped = Math.max(0, Math.round(minutes));
-        const hours = Math.floor(clamped / 60);
-        const mins = clamped % 60;
-        return `${String(hours).padStart(2, '0')}h${String(mins).padStart(2, '0')}`;
       }
 
       function formatPlannedEnd(startTime, totalMinutes, pause) {
@@ -951,67 +1037,48 @@
         return `${String(hours).padStart(2, '0')}h${String(mins).padStart(2, '0')}`;
       }
 
-      function calcCapacity(start, end, code, pause) {
-        const startMinutes = parseTimeToMinutes(start);
-        const endMinutes = parseTimeToMinutes(end);
-        const pauseMinutes = pause ? 30 : 0;
-        const availableMinutes = Math.max(0, endMinutes - startMinutes - pauseMinutes);
-        const goal = getGoalForCode(code);
-        const refs = goal > 0 ? (availableMinutes * goal) / 60 : 0;
-        return {
-          availableMinutes,
-          refs
-        };
-      }
-
-      function updateProductionResults(data) {
-        const metrics = calculateMetrics(data);
-        const plannedEnd = formatPlannedEnd(data.startTime, metrics.theoreticalMinutes, data.pause);
-
-        document.getElementById('theoreticalTimeDisplay').textContent = minutesToText(metrics.theoreticalMinutes);
-        document.getElementById('plannedEndDisplay').textContent = plannedEnd;
-        document.getElementById('referencesProducedDisplay').textContent = formatNumber(metrics.producedRefs);
-        document.getElementById('remainingRefsDisplay').textContent = formatNumber(metrics.remainingRefs);
-        document.getElementById('realTimeDisplay').textContent = minutesToText(metrics.realProductionMinutes);
-        document.getElementById('performanceDisplay').textContent = `${Math.round(metrics.performance)}%`;
-
-        remainingRefsInput.value = formatNumber(metrics.remainingRefs);
-      }
-
-      function calculateCurrentProduction() {
-        const productionData = {
-          code: productionCodeSelect.value,
-          totalRefs: Number(totalRefsInput.value) || 0,
+      function updateProductionResults() {
+        const code = productionCodeSelect.value;
+        const totalRefs = Number(totalRefsInput.value) || 0;
+        const metrics = calculateMetrics({
+          code,
+          totalRefs,
           startTime: productionStartInput.value,
           endTime: productionEndInput.value,
           pause: pause30Input.checked
-        };
+        });
 
-        updateProductionResults(productionData);
+        document.getElementById('theoreticalTimeDisplay').textContent = minutesToText(metrics.theoreticalMinutes);
+        document.getElementById('plannedEndDisplay').textContent = formatPlannedEnd(productionStartInput.value, metrics.theoreticalMinutes, pause30Input.checked);
+        document.getElementById('referencesProducedDisplay').textContent = `${formatNumber(metrics.producedRefs)} réf.`;
+        document.getElementById('remainingRefsDisplay').textContent = `${formatNumber(metrics.remainingRefs)} réf.`;
+        document.getElementById('realTimeDisplay').textContent = minutesToText(metrics.realProductionMinutes);
+        document.getElementById('performanceDisplay').textContent = `${Math.round(metrics.performance)}%`;
+        document.getElementById('goalDisplay').textContent = `${getGoalForCode(code)} réf/h`;
+        document.getElementById('producedDisplay').textContent = `${formatNumber(metrics.producedRefs)} réf.`;
+        remainingRefsInput.value = formatNumber(metrics.remainingRefs);
       }
 
       function resetCurrentForm() {
-        productionForm.reset();
-        productionDateInput.value = new Date().toISOString().slice(0, 10);
-        totalRefsInput.value = 0;
-        remainingRefsInput.value = 0;
-        document.getElementById('theoreticalTimeDisplay').textContent = '0h00';
-        document.getElementById('plannedEndDisplay').textContent = '0h00';
-        document.getElementById('referencesProducedDisplay').textContent = '0';
-        document.getElementById('remainingRefsDisplay').textContent = '0';
-        document.getElementById('realTimeDisplay').textContent = '0h00';
-        document.getElementById('performanceDisplay').textContent = '0%';
-        document.getElementById('capacityOutput').textContent = '0';
+        productionDateInput.value = new Date().toISOString().slice(0,10);
+        saleNameInput.value = '';
+        productionCodeSelect.value = 'AL SIMPLE';
+        totalRefsInput.value = '80';
+        productionStartInput.value = '12:00';
+        productionEndInput.value = '19:00';
+        remainingRefsInput.value = '15';
+        pause30Input.checked = true;
+        updateProductionResults();
       }
 
       function saveProduction() {
-        const date = productionDateInput.value || new Date().toISOString().slice(0, 10);
+        const date = productionDateInput.value || new Date().toISOString().slice(0,10);
         const name = saleNameInput.value.trim();
         const code = productionCodeSelect.value;
         const totalRefs = Number(totalRefsInput.value) || 0;
 
         if (!name || !code || totalRefs <= 0) {
-          showToast('Complétez le nom, le code et le volume pour enregistrer.');
+          showToast('Complétez le nom, le code et le volume.');
           return;
         }
 
@@ -1035,92 +1102,104 @@
           pause: pause30Input.checked,
           realProductionMinutes: metrics.realProductionMinutes,
           theoreticalMinutes: metrics.theoreticalMinutes,
-          producedRefs: metrics.producedRefs,
           performance: metrics.performance,
           createdAt: new Date().toISOString()
         };
 
         state.productions.push(record);
         state.productions.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        if (!safeWrite(STORAGE_KEYS.productions, state.productions)) {
-          showToast('Erreur de sauvegarde locale.');
-        }
-
+        safeWrite(STORAGE_KEYS.productions, state.productions);
         renderHistory();
-        showToast('Production enregistrée avec succès.');
+        showToast('Production enregistrée.');
       }
 
       function loadData() {
         state.productions = safeRead(STORAGE_KEYS.productions, []);
         state.futureSales = safeRead(STORAGE_KEYS.futureSales, []);
-        state.closedDays = safeRead(STORAGE_KEYS.closedDays, []);
       }
 
       function renderFutureSales() {
-        if (!state.futureSales.length) {
-          futureSalesList.innerHTML = '<div class="advice-empty">Aucune vente à venir.</div>';
+        const sales = state.futureSales;
+        if (!sales.length) {
+          futureSalesList.innerHTML = '<div class="future-empty">Aucune vente à venir.</div>';
           return;
         }
 
-        futureSalesList.innerHTML = '';
+        futureSalesList.innerHTML = sales.map((sale) => `
+          <div class="future-item">
+            <div class="future-text">
+              <div class="future-name">${sale.name}</div>
+              <div class="future-meta">
+                <span>${sale.code}</span>
+                <span class="future-volume">${sale.volume} références</span>
+              </div>
+            </div>
+            <div class="future-actions">
+              <button type="button" class="mini-btn primary-btn" data-action="treat" data-id="${sale.id}">Traiter</button>
+              <button type="button" class="mini-btn secondary-btn" data-action="edit" data-id="${sale.id}">Modifier</button>
+              <button type="button" class="mini-btn ghost-btn" data-action="delete" data-id="${sale.id}">Supprimer</button>
+            </div>
+          </div>
+        `).join('');
 
-        state.futureSales.forEach((sale) => {
-          const item = document.createElement('div');
-          item.className = 'future-item';
+        futureSalesList.querySelectorAll('[data-action]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const { action, id } = btn.dataset;
+            const item = sales.find((s) => String(s.id) === String(id));
+            if (!item) return;
 
-          const text = document.createElement('div');
-          text.className = 'sale-text';
-          text.innerHTML = `
-            <div class="sale-name">${sale.name}</div>
-            <div class="sale-meta">${sale.code}</div>
-            <div class="sale-volume">${sale.volume} références</div>
-          `;
+            if (action === 'treat') {
+              saleNameInput.value = item.name;
+              productionCodeSelect.value = item.code;
+              totalRefsInput.value = item.volume;
+              productionDateInput.value = new Date().toISOString().slice(0,10);
+              updateProductionResults();
+              showToast('Vente transférée dans le calcul.');
+            }
 
-          const actions = document.createElement('div');
-          actions.className = 'future-actions';
+            if (action === 'edit') {
+              document.getElementById('futureName').value = item.name;
+              document.getElementById('futureCode').value = item.code;
+              document.getElementById('futureVolume').value = item.volume;
+              document.getElementById('futureName').dataset.editId = String(item.id);
+              document.getElementById('addFutureSaleBtn').textContent = 'Mettre à jour';
+            }
 
-          const handleBtn = document.createElement('button');
-          handleBtn.type = 'button';
-          handleBtn.className = 'mini-btn primary-btn';
-          handleBtn.textContent = 'Traiter';
-          handleBtn.addEventListener('click', () => {
-            saleNameInput.value = sale.name;
-            totalRefsInput.value = sale.volume;
-            productionCodeSelect.value = sale.code;
-            const today = new Date().toISOString().slice(0, 10);
-            productionDateInput.value = today;
-            calculateCurrentProduction();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (action === 'delete') {
+              state.futureSales = state.futureSales.filter((s) => String(s.id) !== String(id));
+              safeWrite(STORAGE_KEYS.futureSales, state.futureSales);
+              renderFutureSales();
+              showToast('Vente supprimée.');
+            }
           });
-
-          const editBtn = document.createElement('button');
-          editBtn.type = 'button';
-          editBtn.className = 'mini-btn secondary-btn';
-          editBtn.textContent = 'Modifier';
-          editBtn.addEventListener('click', () => {
-            futureName.value = sale.name;
-            futureVolume.value = sale.volume;
-            futureCode.value = sale.code;
-            sale.idToEdit = sale.id;
-            addFutureSaleBtn.textContent = 'Mettre à jour';
-          });
-
-          const deleteBtn = document.createElement('button');
-          deleteBtn.type = 'button';
-          deleteBtn.className = 'mini-btn danger-btn';
-          deleteBtn.textContent = 'Supprimer';
-          deleteBtn.addEventListener('click', () => {
-            state.futureSales = state.futureSales.filter((item) => item.id !== sale.id);
-            safeWrite(STORAGE_KEYS.futureSales, state.futureSales);
-            renderFutureSales();
-            showToast('Vente supprimée.');
-          });
-
-          actions.append(handleBtn, editBtn, deleteBtn);
-          item.append(text, actions);
-          futureSalesList.appendChild(item);
         });
+      }
+
+      function addFutureSale() {
+        const name = document.getElementById('futureName').value.trim();
+        const code = document.getElementById('futureCode').value;
+        const volume = Number(document.getElementById('futureVolume').value) || 0;
+
+        if (!name || volume <= 0) {
+          showToast('Nom et volume requis.');
+          return;
+        }
+
+        const editId = document.getElementById('futureName').dataset.editId;
+        if (editId) {
+          state.futureSales = state.futureSales.map((sale) => String(sale.id) === String(editId) ? { ...sale, name, code, volume } : sale);
+          delete document.getElementById('futureName').dataset.editId;
+          document.getElementById('addFutureSaleBtn').textContent = 'Ajouter';
+        } else {
+          state.futureSales.push({ id: Date.now() + Math.random(), name, code, volume });
+        }
+
+        safeWrite(STORAGE_KEYS.futureSales, state.futureSales);
+        renderFutureSales();
+        document.getElementById('futureName').value = '';
+        document.getElementById('futureCode').value = 'AL SIMPLE';
+        document.getElementById('futureVolume').value = '15';
+        showToast('Vente enregistrée.');
       }
 
       function renderHistory() {
@@ -1128,13 +1207,11 @@
         const dateFilter = historyDateFilterInput.value;
 
         let filtered = [...state.productions];
-
         if (search) {
-          filtered = filtered.filter((p) => p.name.toLowerCase().includes(search));
+          filtered = filtered.filter((item) => item.name.toLowerCase().includes(search));
         }
-
         if (dateFilter) {
-          filtered = filtered.filter((p) => p.date === dateFilter);
+          filtered = filtered.filter((item) => item.date === dateFilter);
         }
 
         const grouped = filtered.reduce((acc, item) => {
@@ -1146,89 +1223,75 @@
         const dates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
 
         if (!dates.length) {
-          historyContainer.innerHTML = '<div class="advice-empty">Aucune production enregistrée pour le moment.</div>';
+          historyContainer.innerHTML = '<div class="future-empty">Aucune production enregistrée.</div>';
           return;
         }
 
-        const cards = dates.map((date) => {
+        historyContainer.innerHTML = dates.map((date) => {
           const items = grouped[date].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           const totalMinutes = items.reduce((sum, item) => sum + Number(item.realProductionMinutes || 0), 0);
           const normalHours = Math.min(totalMinutes, 480);
           const extraHours = Math.max(totalMinutes - 480, 0);
-
-          const listHtml = items.map((item) => `
-            <li class="day-item">
-              <div class="day-item-main">
-                <span class="name">${item.name} — ${item.code} — ${Number(item.totalRefs || 0)} références</span>
-                <span class="meta">Début ${item.startTime || '--:--'} • Fin ${item.endTime || '--:--'} • ${minutesToText(item.realProductionMinutes || 0)}</span>
-              </div>
-              <div class="rest">Reste: ${Number(item.remainingRefs || 0)}</div>
-              <div class="future-actions">
-                <button type="button" class="mini-btn secondary-btn" data-action="complete" data-id="${item.id}">Terminer</button>
-                <button type="button" class="mini-btn secondary-btn" data-action="clear-remaining" data-id="${item.id}">Supprimer le reste</button>
-                <button type="button" class="mini-btn danger-btn" data-action="delete-record" data-id="${item.id}">Supprimer</button>
-              </div>
-            </li>
-          `).join('');
+          const restTotal = items.reduce((sum, item) => sum + Number(item.remainingRefs || 0), 0);
 
           return `
             <div class="day-group">
-              <div class="day-header">
-                <div class="day-title">📅 ${formatDateLabel(date)}</div>
-                
-                <div class="day-dashboard">
-                  <div class="dash-item">
-                    <span class="label">Ventes traitées</span>
-                    <span class="value">${items.length}</span>
-                  </div>
-                  <div class="dash-item">
-                    <span class="label">Heure effectuée</span>
-                    <span class="value">${minutesToText(totalMinutes)}</span>
-                  </div>
-                  <div class="dash-item">
-                    <span class="label">Heures normales</span>
-                    <span class="value">${minutesToText(normalHours)}</span>
-                  </div>
-                  <div class="dash-item">
-                    <span class="label">Supplémentaires</span>
-                    <span class="value">${minutesToText(extraHours)}</span>
-                  </div>
+              <div class="day-group-header">
+                <div>
+                  <span>📅</span>
+                  <span>${formatDateLabel(date)}</span>
                 </div>
-
-                <div class="day-actions">
-                  <button type="button" class="mini-btn secondary-btn" data-close-date="${date}">Clôturer</button>
+                <div class="dashboard-mini">
+                  <div class="dash"><span class="label">Ventes</span><span class="value">${items.length}</span></div>
+                  <div class="dash"><span class="label">Heure effectuée</span><span class="value">${minutesToText(totalMinutes)}</span></div>
+                  <div class="dash"><span class="label">Heures normales</span><span class="value">${minutesToText(normalHours)}</span></div>
+                  <div class="dash"><span class="label">Suppl.</span><span class="value">${minutesToText(extraHours)}</span></div>
                 </div>
+                <button type="button" class="mini-btn secondary-btn" data-close-date="${date}">Clôturer</button>
               </div>
 
-              <ul class="day-list">${listHtml}</ul>
+              <ul class="day-list">
+                ${items.map((item) => `
+                  <li class="day-item">
+                    <div class="day-item-main">
+                      <span class="name">${item.name}</span>
+                      <span class="meta">${item.code} • ${item.totalRefs} réf. • Début ${item.startTime || '--:--'} • Fin ${item.endTime || '--:--'} • ${minutesToText(item.realProductionMinutes || 0)}</span>
+                    </div>
+                    <span class="rest">Reste : ${item.remainingRefs || 0}</span>
+                    <div class="actions">
+                      <button type="button" class="mini-btn secondary-btn" data-action="complete" data-id="${item.id}">Terminer</button>
+                      <button type="button" class="mini-btn secondary-btn" data-action="clear-remaining" data-id="${item.id}">Supprimer le reste</button>
+                      <button type="button" class="mini-btn ghost-btn" data-action="delete-record" data-id="${item.id}">Supprimer</button>
+                    </div>
+                  </li>
+                `).join('')}
+              </ul>
             </div>
           `;
         }).join('');
 
-        historyContainer.innerHTML = cards;
-
         historyContainer.querySelectorAll('[data-action]').forEach((button) => {
           button.addEventListener('click', () => {
             const { action, id } = button.dataset;
-            const target = state.productions.find((item) => String(item.id) === id);
+            const target = state.productions.find((item) => String(item.id) === String(id));
             if (!target) return;
 
             if (action === 'complete') {
               target.remainingRefs = 0;
               safeWrite(STORAGE_KEYS.productions, state.productions);
               renderHistory();
-              showToast('Vente terminée.');
+              showToast('Production terminée.');
             }
 
             if (action === 'clear-remaining') {
               target.remainingRefs = 0;
               safeWrite(STORAGE_KEYS.productions, state.productions);
               renderHistory();
-              showToast('Références restantes supprimées.');
+              showToast('Reste supprimé.');
             }
 
             if (action === 'delete-record') {
-              state.productions = state.productions.filter((item) => String(item.id) !== id);
+              state.productions = state.productions.filter((item) => String(item.id) !== String(id));
               safeWrite(STORAGE_KEYS.productions, state.productions);
               renderHistory();
               showToast('Production supprimée.');
@@ -1238,83 +1301,39 @@
 
         historyContainer.querySelectorAll('[data-close-date]').forEach((button) => {
           button.addEventListener('click', () => {
-            const date = button.dataset.closeDate;
-            closeDay(date);
+            closeDay(button.dataset.closeDate);
           });
         });
-      }
-
-      function addFutureSale() {
-        const name = document.getElementById('futureName').value.trim();
-        const volume = Number(document.getElementById('futureVolume').value) || 0;
-        const code = document.getElementById('futureCode').value;
-
-        if (!name || volume <= 0) {
-          showToast('Nom et volume requis pour ajouter une vente.');
-          return;
-        }
-
-        const editId = document.getElementById('futureName').dataset.editId;
-
-        if (editId) {
-          state.futureSales = state.futureSales.map((sale) =>
-            String(sale.id) === String(editId)
-              ? { ...sale, name, volume, code }
-              : sale
-          );
-          delete document.getElementById('futureName').dataset.editId;
-          addFutureSaleBtn.textContent = 'Ajouter';
-        } else {
-          state.futureSales.push({
-            id: Date.now() + Math.random(),
-            name,
-            volume,
-            code
-          });
-        }
-
-        safeWrite(STORAGE_KEYS.futureSales, state.futureSales);
-        renderFutureSales();
-        document.getElementById('futureName').value = '';
-        document.getElementById('futureVolume').value = 0;
-        document.getElementById('futureCode').value = 'AL SIMPLE';
-
-        showToast('Vente à venir enregistrée.');
       }
 
       function closeDay(date) {
         const records = state.productions.filter((item) => item.date === date);
         if (!records.length) {
-          showToast('Aucune production à clôturer pour cette date.');
+          showToast('Aucune production pour cette date.');
           return;
         }
-
         const totalMinutes = records.reduce((sum, item) => sum + Number(item.realProductionMinutes || 0), 0);
         const normalHours = Math.min(totalMinutes, 480);
         const extraHours = Math.max(totalMinutes - 480, 0);
         const totalRefs = records.reduce((sum, item) => sum + Number(item.totalRefs || 0), 0);
-        const remainingForTomorrow = records.reduce((sum, item) => sum + Number(item.remainingRefs || 0), 0);
+        const restTotal = records.reduce((sum, item) => sum + Number(item.remainingRefs || 0), 0);
 
         const summary = {
           date,
           salesCount: records.length,
           totalMinutes,
-          normalMinutes: normalHours,
-          extraMinutes: extraHours,
+          normalHours,
+          extraHours,
           totalRefs,
-          remainingForTomorrow,
-          createdAt: new Date().toISOString()
+          restTotal
         };
 
-        state.closedDays = state.closedDays.filter((entry) => entry.date !== date);
-        state.closedDays.push(summary);
-        safeWrite(STORAGE_KEYS.closedDays, state.closedDays);
-
+        const key = `astroprod_closed_${date}`;
+        localStorage.setItem(key, JSON.stringify(summary));
         showToast(`Journée clôturée : ${formatDateLabel(date)}`);
-        renderHistory();
       }
 
-      function initCapacitySimulation() {
+      function initCapacity() {
         const capacityStart = document.getElementById('capacityStart');
         const capacityEnd = document.getElementById('capacityEnd');
         const capacityCode = document.getElementById('capacityCode');
@@ -1322,53 +1341,54 @@
         const capacityOutput = document.getElementById('capacityOutput');
 
         document.getElementById('capacityBtn').addEventListener('click', () => {
-          const result = calcCapacity(capacityStart.value, capacityEnd.value, capacityCode.value, capacityPause.checked);
-          capacityOutput.textContent = Math.round(result.refs).toString();
+          const startMinutes = parseTimeToMinutes(capacityStart.value);
+          const endMinutes = parseTimeToMinutes(capacityEnd.value);
+          const pauseMinutes = capacityPause.checked ? 30 : 0;
+          const availableMinutes = Math.max(0, endMinutes - startMinutes - pauseMinutes);
+          const goal = getGoalForCode(capacityCode.value);
+          const refs = goal > 0 ? (availableMinutes * goal) / 60 : 0;
+          capacityOutput.textContent = `${Math.round(refs)} réf.`;
         });
       }
 
       function bindEvents() {
-        document.getElementById('calculateBtn').addEventListener('click', calculateCurrentProduction);
+        document.getElementById('calculateBtn').addEventListener('click', updateProductionResults);
         document.getElementById('saveProductionBtn').addEventListener('click', saveProduction);
         document.getElementById('resetFormBtn').addEventListener('click', resetCurrentForm);
-        document.getElementById('addFutureSaleBtn').addEventListener('click', addFutureSale);
+
         document.getElementById('closeDayBtn').addEventListener('click', () => {
-          const currentDate = historyDateFilterInput.value || productionDateInput.value || new Date().toISOString().slice(0, 10);
-          closeDay(currentDate);
+          const selectedDate = historyDateFilterInput.value || productionDateInput.value || new Date().toISOString().slice(0,10);
+          closeDay(selectedDate);
+        });
+
+        document.getElementById('addFutureSaleBtn').addEventListener('click', addFutureSale);
+        document.getElementById('filterBtn').addEventListener('click', () => {
+          historySearchInput.value = '';
+          historyDateFilterInput.value = '';
+          renderHistory();
         });
 
         historySearchInput.addEventListener('input', renderHistory);
         historyDateFilterInput.addEventListener('change', renderHistory);
-        productionCodeSelect.addEventListener('change', calculateCurrentProduction);
-        totalRefsInput.addEventListener('input', calculateCurrentProduction);
-        productionStartInput.addEventListener('input', calculateCurrentProduction);
-        productionEndInput.addEventListener('input', calculateCurrentProduction);
-        pause30Input.addEventListener('change', calculateCurrentProduction);
+        productionCodeSelect.addEventListener('change', updateProductionResults);
+        totalRefsInput.addEventListener('input', updateProductionResults);
+        productionStartInput.addEventListener('input', updateProductionResults);
+        productionEndInput.addEventListener('input', updateProductionResults);
+        pause30Input.addEventListener('change', updateProductionResults);
         remainingRefsInput.addEventListener('input', () => {
           const value = Number(remainingRefsInput.value) || 0;
-          document.getElementById('remainingRefsDisplay').textContent = formatNumber(value);
-        });
-
-        const futureName = document.getElementById('futureName');
-        const futureVolume = document.getElementById('futureVolume');
-        const futureCode = document.getElementById('futureCode');
-        const addBtn = document.getElementById('addFutureSaleBtn');
-
-        futureName.addEventListener('input', () => {
-          if (!futureName.dataset.editId) return;
-          if (!futureName.value.trim()) {
-            addBtn.textContent = 'Ajouter';
-            delete futureName.dataset.editId;
-          }
+          document.getElementById('remainingRefsDisplay').textContent = `${formatNumber(value)} réf.`;
         });
       }
 
       function initialize() {
         loadData();
-        setDefaultDate();
+        const today = new Date().toISOString().slice(0, 10);
+        productionDateInput.value = today;
+        historyDateFilterInput.value = today;
         renderFutureSales();
         renderHistory();
-        initCapacitySimulation();
+        initCapacity();
         bindEvents();
         resetCurrentForm();
       }
