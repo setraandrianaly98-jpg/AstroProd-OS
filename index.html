@@ -427,12 +427,45 @@
         align-items: center;
         gap: 12px;
         flex-wrap: wrap;
-        margin-bottom: 10px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(113, 232, 255, 0.08);
       }
 
       .day-title {
         font-size: 1.05rem;
         font-weight: 700;
+        color: var(--cyan);
+      }
+
+      .day-dashboard {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        flex: 1;
+      }
+
+      .dash-item {
+        background: rgba(7, 18, 28, 0.7);
+        border: 1px solid rgba(113, 232, 255, 0.12);
+        border-radius: 10px;
+        padding: 8px 10px;
+        text-align: center;
+      }
+
+      .dash-item .label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+        margin-bottom: 4px;
+      }
+
+      .dash-item .value {
+        display: block;
+        font-weight: 700;
+        font-size: 0.95rem;
         color: var(--cyan);
       }
 
@@ -483,36 +516,6 @@
         font-weight: 800;
       }
 
-      .day-summary {
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 1px solid rgba(113, 232, 255, 0.09);
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .sum-box {
-        background: rgba(7, 18, 28, 0.7);
-        border: 1px solid rgba(113, 232, 255, 0.12);
-        border-radius: 10px;
-        padding: 10px 12px;
-      }
-
-      .sum-box .label {
-        display: block;
-        color: var(--muted);
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
-
-      .sum-box .value {
-        display: block;
-        margin-top: 6px;
-        font-weight: 700;
-      }
-
       .advice-empty {
         color: var(--muted);
         text-align: center;
@@ -558,6 +561,27 @@
         }
       }
 
+      @media (max-width: 780px) {
+        .day-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .day-dashboard {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          width: 100%;
+        }
+
+        .day-actions {
+          width: 100%;
+        }
+
+        .day-actions > * {
+          flex: 1;
+        }
+      }
+
       @media (max-width: 680px) {
         .topbar {
           flex-direction: column;
@@ -567,7 +591,6 @@
 
         .form-grid,
         .results,
-        .day-summary,
         .mini-grid {
           grid-template-columns: 1fr;
         }
@@ -589,6 +612,10 @@
         .day-item {
           flex-direction: column;
           align-items: flex-start;
+        }
+
+        .day-dashboard {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
     </style>
@@ -1128,8 +1155,6 @@
           const totalMinutes = items.reduce((sum, item) => sum + Number(item.realProductionMinutes || 0), 0);
           const normalHours = Math.min(totalMinutes, 480);
           const extraHours = Math.max(totalMinutes - 480, 0);
-          const refsTreated = items.reduce((sum, item) => sum + Number(item.totalRefs || 0), 0);
-          const refsRemaining = items.reduce((sum, item) => sum + Number(item.remainingRefs || 0), 0);
 
           const listHtml = items.map((item) => `
             <li class="day-item">
@@ -1150,31 +1175,32 @@
             <div class="day-group">
               <div class="day-header">
                 <div class="day-title">📅 ${formatDateLabel(date)}</div>
+                
+                <div class="day-dashboard">
+                  <div class="dash-item">
+                    <span class="label">Ventes traitées</span>
+                    <span class="value">${items.length}</span>
+                  </div>
+                  <div class="dash-item">
+                    <span class="label">Heure effectuée</span>
+                    <span class="value">${minutesToText(totalMinutes)}</span>
+                  </div>
+                  <div class="dash-item">
+                    <span class="label">Heures normales</span>
+                    <span class="value">${minutesToText(normalHours)}</span>
+                  </div>
+                  <div class="dash-item">
+                    <span class="label">Supplémentaires</span>
+                    <span class="value">${minutesToText(extraHours)}</span>
+                  </div>
+                </div>
+
                 <div class="day-actions">
                   <button type="button" class="mini-btn secondary-btn" data-close-date="${date}">Clôturer</button>
                 </div>
               </div>
 
               <ul class="day-list">${listHtml}</ul>
-
-              <div class="day-summary">
-                <div class="sum-box">
-                  <span class="label">Nombre de ventes traitées</span>
-                  <span class="value">${items.length}</span>
-                </div>
-                <div class="sum-box">
-                  <span class="label">Heure effectuée</span>
-                  <span class="value">${minutesToText(totalMinutes)}</span>
-                </div>
-                <div class="sum-box">
-                  <span class="label">Heures normales</span>
-                  <span class="value">${minutesToText(normalHours)}</span>
-                </div>
-                <div class="sum-box">
-                  <span class="label">Heures supplémentaires</span>
-                  <span class="value">${minutesToText(extraHours)}</span>
-                </div>
-              </div>
             </div>
           `;
         }).join('');
