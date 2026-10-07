@@ -6,13 +6,13 @@
     <title>AstroProd OS</title>
     <style>
       :root {
-        --bg: #040c16;
-        --bg2: #061b2b;
-        --panel: rgba(9, 23, 37, 0.88);
-        --panel-strong: rgba(11, 27, 41, 0.96);
-        --panel-alt: rgba(14, 28, 42, 0.8);
+        --bg: #040d18;
+        --bg2: #061a2d;
+        --panel: rgba(10, 21, 31, 0.88);
+        --panel-strong: rgba(11, 25, 37, 0.96);
+        --panel-alt: rgba(13, 29, 43, 0.82);
         --border: rgba(110, 196, 255, 0.22);
-        --border-strong: rgba(118, 218, 255, 0.4);
+        --border-strong: rgba(118, 218, 255, 0.42);
         --cyan: #5fe3ff;
         --cyan-strong: #4be0ff;
         --cyan-soft: rgba(79, 224, 255, 0.18);
@@ -35,7 +35,7 @@
         min-height: 100%;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background:
-          radial-gradient(circle at 70% 15%, rgba(60, 112, 255, 0.32), transparent 24%),
+          radial-gradient(circle at 70% 15%, rgba(60, 112, 255, 0.35), transparent 25%),
           linear-gradient(180deg, #030b13 0%, #061725 100%);
         color: var(--text);
       }
@@ -87,7 +87,7 @@
         position: relative;
         z-index: 1;
         width: min(1360px, calc(100% - 26px));
-        margin: 14px auto 28px;
+        margin: 12px auto 28px;
       }
 
       .topbar {
@@ -388,7 +388,7 @@
 
       .capacity-output strong {
         color: var(--cyan);
-        font-size: 1.2rem;
+        font-size: 1.25rem;
       }
 
       .future-list { display: grid; gap: 10px; margin-top: 12px; }
@@ -500,7 +500,7 @@
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        gap: 14px;
+        gap: 12px;
         color: var(--muted);
         font-size: 0.72rem;
         letter-spacing: 0.04em;
@@ -784,16 +784,16 @@
               <span id="theoreticalTimeDisplay" class="value">8h00</span>
             </div>
             <div class="metric-box cyan">
-              <span class="label">Temps réel de production</span>
+              <span class="label">Temps réel</span>
               <span id="realTimeDisplay" class="value">6h30</span>
             </div>
 
             <div class="metric-box success">
-              <span class="label">Performance de la vente</span>
+              <span class="label">Performance</span>
               <span id="performanceDisplay" class="value">123%</span>
             </div>
             <div class="metric-box danger">
-              <span class="label">Références restantes</span>
+              <span class="label">Reste</span>
               <span id="remainingRefsDisplay" class="value">15 réf.</span>
             </div>
             <div class="metric-box cyan">
@@ -801,7 +801,7 @@
               <span id="goalDisplay" class="value">10 réf/h</span>
             </div>
             <div class="metric-box success">
-              <span class="label">Références réellement produites</span>
+              <span class="label">Produits</span>
               <span id="producedDisplay" class="value">65 réf.</span>
             </div>
           </div>
@@ -943,10 +943,7 @@
       const futureSalesList = document.getElementById('futureSalesList');
       const toast = document.getElementById('toast');
 
-      let state = {
-        productions: [],
-        futureSales: []
-      };
+      let state = { productions: [], futureSales: [] };
 
       function safeRead(key, fallback) {
         try {
@@ -1234,6 +1231,12 @@
           const extraHours = Math.max(totalMinutes - 480, 0);
           const restTotal = items.reduce((sum, item) => sum + Number(item.remainingRefs || 0), 0);
 
+          document.getElementById('daySalesCount').textContent = items.length;
+          document.getElementById('dayRealTime').textContent = minutesToText(totalMinutes);
+          document.getElementById('dayNormalHours').textContent = minutesToText(normalHours);
+          document.getElementById('dayExtraHours').textContent = minutesToText(extraHours);
+          document.getElementById('dayRestTotal').textContent = restTotal;
+
           return `
             <div class="day-group">
               <div class="day-group-header">
@@ -1312,6 +1315,7 @@
           showToast('Aucune production pour cette date.');
           return;
         }
+
         const totalMinutes = records.reduce((sum, item) => sum + Number(item.realProductionMinutes || 0), 0);
         const normalHours = Math.min(totalMinutes, 480);
         const extraHours = Math.max(totalMinutes - 480, 0);
