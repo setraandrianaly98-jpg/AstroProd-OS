@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AstroProd OS — Station Orbitale de Monitoring</title>
+    <style>
+      :root {
+        --bg: #06121d;
+        --bg-deep: #020b13;
+        --panel: rgba(11, 24, 36, 0.72);
+        --panel-strong: rgba(14, 29, 42, 0.88);
+        --border: rgba(118, 214, 255, 0.22);
+        --cyan: #71e8ff;
+        --cyan-strong: #3ed7ff;
+        --blue: #7aa9ff;
+        --blue-strong: #4f7df7;
+        --ink: #edf8ff;
+        --muted: #9dc0d6;
+        --success: #7af8c8;
+        --warning: #ffd166;
+        --danger: #ff6b7d;
+        --shadow: rgba(0, 0, 0, 0.4);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background:
+          radial-gradient(circle at 80% 15%, rgba(68, 132, 255, 0.25), transparent 20%),
+          radial-gradient(circle at 15% 20%, rgba(42, 157, 193, 0.18), transparent 22%),
+          linear-gradient(180deg, #040d18 0%, #071824 100%);
+        color: var(--ink);
+      }
+
+      body {
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          radial-gradient(2px 2px at 15% 25%, rgba(255,255,255,0.9) 0%, transparent 55%),
+          radial-gradient(2px 2px at 30% 80%, rgba(160,220,255,0.8) 0%, transparent 50%),
+          radial-gradient(2px 2px at 65% 35%, rgba(255,255,255,0.9) 0%, transparent 60%),
+          radial-gradient(2px 2px at 80% 70%, rgba(160,220,255,0.8) 0%, transparent 50%),
+          radial-gradient(2px 2px at 90% 20%, rgba(255,255,255,0.9) 0%, transparent 55%);
+        opacity: 0.75;
+        pointer-events: none;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        right: -8%;
+        bottom: -16%;
+        width: 62vw;
+        height: 62vw;
+        min-width: 420px;
+        min-height: 420px;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 34% 30%, rgba(115, 214, 255, 0.55), rgba(16, 82, 135, 0.85) 20%, rgba(7, 28, 50, 0.92) 45%, rgba(2, 14, 25, 0.98) 62%),
+          linear-gradient(120deg, rgba(28,110,163,0.8), rgba(4,17,27,0.3));
+        box-shadow: inset -25px -20px 30px rgba(2, 12, 20, 0.9), inset 28px 24px 30px rgba(118, 214, 255, 0.18), 0 0 50px rgba(45, 152, 255, 0.2);
+        z-index: 0;
+        animation: earthDrift 18s ease-in-out infinite alternate;
+        opacity: 0.92;
+        pointer-events: none;
+      }
+
+      @keyframes earthDrift {
+        0% { transform: translate3d(0, 0, 0) scale(1); }
+        100% { transform: translate3d(-14px, -12px, 0) scale(1.04); }
+      }
+
+      .app-shell {
+        position: relative;
+        z-index: 1;
+        width: min(1500px, calc(100% - 24px));
+        margin: 20px auto 32px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(10, 21, 29, 0.52);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+      }
+
+      .brand {
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: clamp(1.1rem, 1.4vw, 1.5rem);
+      }
+
+      .brand span {
+        color: var(--muted);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        margin-left: 12px;
+        text-transform: none;
+      }
+
+      .status-pill {
+        border: 1px solid rgba(113, 232, 255, 0.38);
+        background: rgba(9, 35, 50, 0.45);
+        color: var(--cyan);
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(300px, 1.2fr) minmax(320px, 1fr);
+        gap: 20px;
+        align-items: start;
+      }
+
+      .card {
+        background: linear-gradient(180deg, rgba(14, 28, 40, 0.75), rgba(9, 18, 27, 0.8));
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(10px);
+      }
+
+      .panel {
+        padding: 18px 18px 16px;
+      }
+
+      .panel h2 {
+        margin: 0 0 16px;
+        font-size: 1.05rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--cyan);
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 14px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        color: var(--muted);
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      input, select, button {
+        font: inherit;
+      }
+
+      input, select {
+        width: 100%;
+        border: 1px solid rgba(113, 232, 255, 0.18);
+        background: rgba(7, 18, 28, 0.7);
+        color: var(--ink);
+        padding: 10px 12px;
+        border-radius: 10px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      input:focus, select:focus {
+        outline: none;
+        border-color: rgba(113, 232, 255, 0.7);
+        box-shadow: 0 0 0 3px rgba(113, 232, 255, 0.12);
+      }
+
+      .checkbox-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: 1px solid rgba(113, 232, 255, 0.16);
+        background: rgba(7, 18, 28, 0.55);
+        border-radius: 10px;
+        padding: 10px 12px;
+        min-height: 44px;
+      }
+
+      .checkbox-row label {
+        margin: 0;
+        letter-spacing: 0.04em;
+        text-transform: none;
+        font-size: 0.92rem;
+        color: var(--ink);
+      }
+
+      .checkbox-row input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: var(--cyan-strong);
+      }
+
+      .button-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: none;
+        border-radius: 10px;
+        padding: 11px 16px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+      }
+
+      .primary-btn {
+        background: linear-gradient(135deg, var(--cyan-strong), var(--blue-strong));
+        color: #02141f;
+        box-shadow: 0 10px 18px rgba(62, 215, 255, 0.22);
+      }
+
+      .secondary-btn {
+        background: rgba(133, 182, 253, 0.12);
+        color: var(--ink);
+        border: 1px solid rgba(133, 182, 253, 0.22);
+      }
+
+      .ghost-btn {
+        background: rgba(255,255,255,0.04);
+        color: var(--muted);
+        border: 1px solid rgba(255,255,255,0.1);
+        letter-spacing: 0.03em;
+      }
+
+      .danger-btn {
+        background: rgba(255, 107, 125, 0.12);
+        border: 1px solid rgba(255, 107, 125, 0.25);
+        color: #ffdfe5;
+      }
+
+      .results {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .metric {
+        background: rgba(7, 17, 25, 0.7);
+        border: 1px solid rgba(113, 232, 255, 0.16);
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .metric .label {
+        display: block;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 0.65rem;
+        letter-spacing: 0.08em;
+        margin-bottom: 8px;
+      }
+
+      .metric .value {
+        display: block;
+        font-size: clamp(1.05rem, 1.7vw, 1.7rem);
+        font-weight: 800;
+        line-height: 1.2;
+      }
+
+      .value.cyan { color: var(--cyan); }
+      .value.success { color: var(--success); }
+      .value.warning { color: var(--warning); }
+      .value.danger { color: var(--danger); }
+
+      .right-panel {
+        display: grid;
+        gap: 20px;
+      }
+
+      .mini-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .capacity-output {
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 14px 16px;
+        background: rgba(7, 19, 29, 0.8);
+        border: 1px solid rgba(113, 232, 255, 0.17);
+        border-radius: 12px;
+      }
+
+      .capacity-output strong {
+        font-size: 1.5rem;
+        color: var(--cyan);
+      }
+
+      .future-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .future-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(7, 18, 28, 0.76);
+        border: 1px solid rgba(113, 232, 255, 0.12);
+      }
+
+      .sale-text {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .sale-name {
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .sale-meta {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .sale-volume {
+        color: var(--warning);
+        font-weight: 800;
+        font-size: 0.92rem;
+      }
+
+      .future-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .mini-btn {
+        padding: 7px 8px;
+        font-size: 0.7rem;
+        border-radius: 8px;
+        letter-spacing: 0.04em;
+      }
+
+      .history-panel {
+        margin-top: 22px;
+        padding: 18px;
+      }
+
+      .history-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+
+      .history-tools {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .history-tools input {
+        min-width: 180px;
+      }
+
+      .day-group {
+        border: 1px solid rgba(113, 232, 255, 0.12);
+        background: rgba(8, 18, 28, 0.55);
+        border-radius: 16px;
+        padding: 14px;
+        margin-top: 12px;
+      }
+
+      .day-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+
+      .day-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--cyan);
+      }
+
+      .day-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .day-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 10px;
+      }
+
+      .day-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        background: rgba(10, 24, 36, 0.8);
+        border-radius: 12px;
+        border: 1px solid rgba(113, 232, 255, 0.1);
+      }
+
+      .day-item-main {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .day-item .name {
+        font-weight: 700;
+      }
+
+      .day-item .meta {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .rest {
+        font-size: 0.85rem;
+        color: var(--warning);
+        font-weight: 800;
+      }
+
+      .day-summary {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(113, 232, 255, 0.09);
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .sum-box {
+        background: rgba(7, 18, 28, 0.7);
+        border: 1px solid rgba(113, 232, 255, 0.12);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+
+      .sum-box .label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .sum-box .value {
+        display: block;
+        margin-top: 6px;
+        font-weight: 700;
+      }
+
+      .advice-empty {
+        color: var(--muted);
+        text-align: center;
+        padding: 20px 10px;
+        border: 1px dashed rgba(113, 232, 255, 0.18);
+        border-radius: 12px;
+        background: rgba(7, 18, 28, 0.4);
+      }
+
+      .toast {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 50;
+        background: rgba(9, 28, 41, 0.92);
+        border: 1px solid rgba(113, 232, 255, 0.22);
+        color: var(--ink);
+        padding: 12px 14px;
+        border-radius: 12px;
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.32);
+        opacity: 0;
+        transform: translateY(12px);
+        pointer-events: none;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .right-panel {
+          grid-template-columns: 1fr;
+        }
+
+        .result-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+
+        .form-grid,
+        .results,
+        .day-summary,
+        .mini-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .button-row,
+        .history-tools,
+        .day-actions,
+        .future-actions {
+          width: 100%;
+        }
+
+        .button-row > *,
+        .history-tools > *,
+        .day-actions > *,
+        .future-actions > * {
+          flex: 1 1 auto;
+        }
+
+        .day-item {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">ASTROPROD OS <span>Station Orbitale de Monitoring</span></div>
+        <div class="status-pill">Mission actif</div>
+      </header>
+
+      <main class="layout">
+        <section class="card panel">
+          <h2>Calculer une production</h2>
+
+          <form id="productionForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="productionDate">Date</label>
+                <input id="productionDate" name="productionDate" type="date" />
+              </div>
+
+              <div class="field">
+                <label for="saleName">Nom de vente</label>
+                <input id="saleName" name="saleName" type="text" placeholder="Ex. Nike" />
+              </div>
+
+              <div class="field full">
+                <label for="productionCode">Type de code / Objectif</label>
+                <select id="productionCode" name="productionCode">
+                  <option value="AL SIMPLE">AL SIMPLE — 10 références/heure</option>
+                  <option value="AL COMPLEXE">AL COMPLEXE — 4,29 références/heure</option>
+                  <option value="FR SIMPLE">FR SIMPLE — 15 références/heure</option>
+                  <option value="FR COMPLEXE">FR COMPLEXE — 6,29 références/heure</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="totalRefs">Nombre total de références</label>
+                <input id="totalRefs" name="totalRefs" type="number" min="0" step="1" value="0" />
+              </div>
+
+              <div class="field">
+                <label for="productionStart">Heure de début</label>
+                <input id="productionStart" name="productionStart" type="time" />
+              </div>
+
+              <div class="field">
+                <label for="productionEnd">Heure de fin réelle</label>
+                <input id="productionEnd" name="productionEnd" type="time" />
+              </div>
+
+              <div class="field">
+                <label for="remainingRefsInput">Références restantes</label>
+                <input id="remainingRefsInput" name="remainingRefsInput" type="number" min="0" step="1" value="0" />
+              </div>
+
+              <div class="field">
+                <div class="checkbox-row">
+                  <label for="pause30">Pause 30 min</label>
+                  <input id="pause30" name="pause30" type="checkbox" />
+                </div>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button type="button" class="primary-btn" id="calculateBtn">Calculer</button>
+              <button type="button" class="secondary-btn" id="saveProductionBtn">Enregistrer la production</button>
+              <button type="button" class="ghost-btn" id="resetFormBtn">Réinitialiser</button>
+            </div>
+          </form>
+
+          <div class="results" id="resultsPanel">
+            <div class="metric">
+              <span class="label">Temps théorique</span>
+              <span id="theoreticalTimeDisplay" class="value cyan">0h00</span>
+            </div>
+            <div class="metric">
+              <span class="label">Fin prévue</span>
+              <span id="plannedEndDisplay" class="value success">0h00</span>
+            </div>
+            <div class="metric">
+              <span class="label">Références à traiter</span>
+              <span id="referencesProducedDisplay" class="value warning">0</span>
+            </div>
+            <div class="metric">
+              <span class="label">Références restantes</span>
+              <span id="remainingRefsDisplay" class="value danger">0</span>
+            </div>
+            <div class="metric">
+              <span class="label">Temps réel</span>
+              <span id="realTimeDisplay" class="value cyan">0h00</span>
+            </div>
+            <div class="metric">
+              <span class="label">Performance de la vente</span>
+              <span id="performanceDisplay" class="value success">0%</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="right-panel">
+          <section class="card panel">
+            <h2>Simulation de capacité</h2>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="capacityStart">Heure de début</label>
+                <input id="capacityStart" type="time" />
+              </div>
+
+              <div class="field">
+                <label for="capacityEnd">Heure de fin</label>
+                <input id="capacityEnd" type="time" />
+              </div>
+
+              <div class="field full">
+                <label for="capacityCode">Code de production</label>
+                <select id="capacityCode">
+                  <option value="AL SIMPLE">AL SIMPLE</option>
+                  <option value="AL COMPLEXE">AL COMPLEXE</option>
+                  <option value="FR SIMPLE">FR SIMPLE</option>
+                  <option value="FR COMPLEXE">FR COMPLEXE</option>
+                </select>
+              </div>
+
+              <div class="field full">
+                <div class="checkbox-row">
+                  <label for="capacityPause">Pause 30 min</label>
+                  <input id="capacityPause" type="checkbox" />
+                </div>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button type="button" class="primary-btn" id="capacityBtn">Calculer</button>
+            </div>
+
+            <div class="capacity-output">
+              <span>Références estimées</span>
+              <strong id="capacityOutput">0</strong>
+            </div>
+          </section>
+
+          <section class="card panel">
+            <h2>Ventes à venir</h2>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="futureName">Nom de vente</label>
+                <input id="futureName" type="text" placeholder="Ex. Adidas" />
+              </div>
+
+              <div class="field">
+                <label for="futureVolume">Nombre de références / volume</label>
+                <input id="futureVolume" type="number" min="0" step="1" value="0" />
+              </div>
+
+              <div class="field full">
+                <label for="futureCode">Code de vente</label>
+                <select id="futureCode">
+                  <option value="AL SIMPLE">AL SIMPLE</option>
+                  <option value="AL COMPLEXE">AL COMPLEXE</option>
+                  <option value="FR SIMPLE">FR SIMPLE</option>
+                  <option value="FR COMPLEXE">FR COMPLEXE</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button type="button" class="primary-btn" id="addFutureSaleBtn">Ajouter</button>
+            </div>
+
+            <div id="futureSalesList" class="future-list"></div>
+          </section>
+        </div>
+      </main>
+
+      <section class="card history-panel">
+        <div class="history-head">
+          <h2>Historique des productions</h2>
+          <div class="history-tools">
+            <input id="historySearch" type="search" placeholder="Rechercher une vente" />
+            <input id="historyDateFilter" type="date" />
+            <button type="button" class="secondary-btn" id="closeDayBtn">Clôturer la journée</button>
+          </div>
+        </div>
+
+        <div id="historyContainer"></div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <script>
+      const STORAGE_KEYS = {
+        productions: 'astroprod_productions_v1',
+        futureSales: 'astroprod_future_sales_v1',
+        closedDays: 'astroprod_closed_days_v1'
+      };
+
+      const GOALS = {
+        'AL SIMPLE': 10,
+        'AL COMPLEXE': 4.29,
+        'FR SIMPLE': 15,
+        'FR COMPLEXE': 6.29
+      };
+
+      const productionForm = document.getElementById('productionForm');
+      const productionDateInput = document.getElementById('productionDate');
+      const saleNameInput = document.getElementById('saleName');
+      const productionCodeSelect = document.getElementById('productionCode');
+      const totalRefsInput = document.getElementById('totalRefs');
+      const productionStartInput = document.getElementById('productionStart');
+      const productionEndInput = document.getElementById('productionEnd');
+      const remainingRefsInput = document.getElementById('remainingRefsInput');
+      const pause30Input = document.getElementById('pause30');
+
+      const historySearchInput = document.getElementById('historySearch');
+      const historyDateFilterInput = document.getElementById('historyDateFilter');
+      const historyContainer = document.getElementById('historyContainer');
+      const futureSalesList = document.getElementById('futureSalesList');
+      const toast = document.getElementById('toast');
+
+      let state = {
+        productions: [],
+        futureSales: [],
+        closedDays: []
+      };
+
+      function safeRead(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (error) {
+          console.warn('localStorage inaccessible:', error);
+          return fallback;
+        }
+      }
+
+      function safeWrite(key, value) {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+          return true;
+        } catch (error) {
+          console.warn('localStorage write failed:', error);
+          return false;
+        }
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(showToast.timeoutId);
+        showToast.timeoutId = setTimeout(() => toast.classList.remove('show'), 2000);
+      }
+
+      function setDefaultDate() {
+        const now = new Date();
+        const iso = now.toISOString().slice(0, 10);
+        productionDateInput.value = iso;
+        historyDateFilterInput.value = iso;
+      }
+
+      function parseTimeToMinutes(value) {
+        if (!value) return 0;
+        const [hours, minutes] = String(value).split(':').map(Number);
+        return (hours || 0) * 60 + (minutes || 0);
+      }
+
+      function minutesToText(minutes) {
+        const safeMinutes = Math.max(0, Math.round(minutes));
+        const hours = Math.floor(safeMinutes / 60);
+        const mins = safeMinutes % 60;
+        return `${hours}h${String(mins).padStart(2, '0')}`;
+      }
+
+      function formatNumber(value) {
+        return Number.isFinite(value) ? Math.round(value) : 0;
+      }
+
+      function formatDateLabel(dateString) {
+        if (!dateString) return 'Date inconnue';
+        const date = new Date(dateString + 'T00:00:00');
+        return new Intl.DateTimeFormat('fr-FR', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        }).format(date);
+      }
+
+      function getGoalForCode(code) {
+        return GOALS[code] ?? 0;
+      }
+
+      function calculateMetrics(data) {
+        const goal = getGoalForCode(data.code);
+        const totalRefs = Number(data.totalRefs) || 0;
+        const theoreticalMinutes = goal > 0 ? (totalRefs / goal) * 60 : 0;
+        const startMinutes = parseTimeToMinutes(data.startTime);
+        const endMinutes = parseTimeToMinutes(data.endTime);
+        const pauseMinutes = data.pause ? 30 : 0;
+
+        const plannedEndMinutes = startMinutes + theoreticalMinutes + (data.pause ? 30 : 0);
+        const realProductionMinutes = Math.max(0, endMinutes - startMinutes - pauseMinutes);
+        const producedRefs = goal > 0 ? (realProductionMinutes * goal) / 60 : 0;
+        const remainingRefs = Math.max(0, totalRefs - producedRefs);
+        const performance = realProductionMinutes > 0 ? (theoreticalMinutes / realProductionMinutes) * 100 : 0;
+
+        return {
+          goal,
+          theoreticalMinutes,
+          plannedEndMinutes,
+          realProductionMinutes,
+          producedRefs,
+          remainingRefs,
+          performance
+        };
+      }
+
+      function formatHoursMinutesFromMinutes(minutes) {
+        const clamped = Math.max(0, Math.round(minutes));
+        const hours = Math.floor(clamped / 60);
+        const mins = clamped % 60;
+        return `${String(hours).padStart(2, '0')}h${String(mins).padStart(2, '0')}`;
+      }
+
+      function formatPlannedEnd(startTime, totalMinutes, pause) {
+        const start = parseTimeToMinutes(startTime);
+        const end = start + totalMinutes + (pause ? 30 : 0);
+        const total = end % (24 * 60);
+        const hours = Math.floor(total / 60);
+        const mins = total % 60;
+        return `${String(hours).padStart(2, '0')}h${String(mins).padStart(2, '0')}`;
+      }
+
+      function calcCapacity(start, end, code, pause) {
+        const startMinutes = parseTimeToMinutes(start);
+        const endMinutes = parseTimeToMinutes(end);
+        const pauseMinutes = pause ? 30 : 0;
+        const availableMinutes = Math.max(0, endMinutes - startMinutes - pauseMinutes);
+        const goal = getGoalForCode(code);
+        const refs = goal > 0 ? (availableMinutes * goal) / 60 : 0;
+        return {
+          availableMinutes,
+          refs
+        };
+      }
+
+      function updateProductionResults(data) {
+        const metrics = calculateMetrics(data);
+        const plannedEnd = formatPlannedEnd(data.startTime, metrics.theoreticalMinutes, data.pause);
+
+        document.getElementById('theoreticalTimeDisplay').textContent = minutesToText(metrics.theoreticalMinutes);
+        document.getElementById('plannedEndDisplay').textContent = plannedEnd;
+        document.getElementById('referencesProducedDisplay').textContent = formatNumber(metrics.producedRefs);
+        document.getElementById('remainingRefsDisplay').textContent = formatNumber(metrics.remainingRefs);
+        document.getElementById('realTimeDisplay').textContent = minutesToText(metrics.realProductionMinutes);
+        document.getElementById('performanceDisplay').textContent = `${Math.round(metrics.performance)}%`;
+
+        remainingRefsInput.value = formatNumber(metrics.remainingRefs);
+      }
+
+      function calculateCurrentProduction() {
+        const productionData = {
+          code: productionCodeSelect.value,
+          totalRefs: Number(totalRefsInput.value) || 0,
+          startTime: productionStartInput.value,
+          endTime: productionEndInput.value,
+          pause: pause30Input.checked
+        };
+
+        updateProductionResults(productionData);
+      }
+
+      function resetCurrentForm() {
+        productionForm.reset();
+        productionDateInput.value = new Date().toISOString().slice(0, 10);
+        totalRefsInput.value = 0;
+        remainingRefsInput.value = 0;
+        document.getElementById('theoreticalTimeDisplay').textContent = '0h00';
+        document.getElementById('plannedEndDisplay').textContent = '0h00';
+        document.getElementById('referencesProducedDisplay').textContent = '0';
+        document.getElementById('remainingRefsDisplay').textContent = '0';
+        document.getElementById('realTimeDisplay').textContent = '0h00';
+        document.getElementById('performanceDisplay').textContent = '0%';
+        document.getElementById('capacityOutput').textContent = '0';
+      }
+
+      function saveProduction() {
+        const date = productionDateInput.value || new Date().toISOString().slice(0, 10);
+        const name = saleNameInput.value.trim();
+        const code = productionCodeSelect.value;
+        const totalRefs = Number(totalRefsInput.value) || 0;
+
+        if (!name || !code || totalRefs <= 0) {
+          showToast('Complétez le nom, le code et le volume pour enregistrer.');
+          return;
+        }
+
+        const metrics = calculateMetrics({
+          code,
+          totalRefs,
+          startTime: productionStartInput.value,
+          endTime: productionEndInput.value,
+          pause: pause30Input.checked
+        });
+
+        const record = {
+          id: Date.now() + Math.random(),
+          date,
+          name,
+          code,
+          totalRefs,
+          startTime: productionStartInput.value,
+          endTime: productionEndInput.value,
+          remainingRefs: Number(remainingRefsInput.value) || Math.round(metrics.remainingRefs),
+          pause: pause30Input.checked,
+          realProductionMinutes: metrics.realProductionMinutes,
+          theoreticalMinutes: metrics.theoreticalMinutes,
+          producedRefs: metrics.producedRefs,
+          performance: metrics.performance,
+          createdAt: new Date().toISOString()
+        };
+
+        state.productions.push(record);
+        state.productions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        if (!safeWrite(STORAGE_KEYS.productions, state.productions)) {
+          showToast('Erreur de sauvegarde locale.');
+        }
+
+        renderHistory();
+        showToast('Production enregistrée avec succès.');
+      }
+
+      function loadData() {
+        state.productions = safeRead(STORAGE_KEYS.productions, []);
+        state.futureSales = safeRead(STORAGE_KEYS.futureSales, []);
+        state.closedDays = safeRead(STORAGE_KEYS.closedDays, []);
+      }
+
+      function renderFutureSales() {
+        if (!state.futureSales.length) {
+          futureSalesList.innerHTML = '<div class="advice-empty">Aucune vente à venir.</div>';
+          return;
+        }
+
+        futureSalesList.innerHTML = '';
+
+        state.futureSales.forEach((sale) => {
+          const item = document.createElement('div');
+          item.className = 'future-item';
+
+          const text = document.createElement('div');
+          text.className = 'sale-text';
+          text.innerHTML = `
+            <div class="sale-name">${sale.name}</div>
+            <div class="sale-meta">${sale.code}</div>
+            <div class="sale-volume">${sale.volume} références</div>
+          `;
+
+          const actions = document.createElement('div');
+          actions.className = 'future-actions';
+
+          const handleBtn = document.createElement('button');
+          handleBtn.type = 'button';
+          handleBtn.className = 'mini-btn primary-btn';
+          handleBtn.textContent = 'Traiter';
+          handleBtn.addEventListener('click', () => {
+            saleNameInput.value = sale.name;
+            totalRefsInput.value = sale.volume;
+            productionCodeSelect.value = sale.code;
+            const today = new Date().toISOString().slice(0, 10);
+            productionDateInput.value = today;
+            calculateCurrentProduction();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+
+          const editBtn = document.createElement('button');
+          editBtn.type = 'button';
+          editBtn.className = 'mini-btn secondary-btn';
+          editBtn.textContent = 'Modifier';
+          editBtn.addEventListener('click', () => {
+            futureName.value = sale.name;
+            futureVolume.value = sale.volume;
+            futureCode.value = sale.code;
+            sale.idToEdit = sale.id;
+            addFutureSaleBtn.textContent = 'Mettre à jour';
+          });
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.type = 'button';
+          deleteBtn.className = 'mini-btn danger-btn';
+          deleteBtn.textContent = 'Supprimer';
+          deleteBtn.addEventListener('click', () => {
+            state.futureSales = state.futureSales.filter((item) => item.id !== sale.id);
+            safeWrite(STORAGE_KEYS.futureSales, state.futureSales);
+            renderFutureSales();
+            showToast('Vente supprimée.');
+          });
+
+          actions.append(handleBtn, editBtn, deleteBtn);
+          item.append(text, actions);
+          futureSalesList.appendChild(item);
+        });
+      }
+
+      function renderHistory() {
+        const search = historySearchInput.value.trim().toLowerCase();
+        const dateFilter = historyDateFilterInput.value;
+
+        let filtered = [...state.productions];
+
+        if (search) {
+          filtered = filtered.filter((p) => p.name.toLowerCase().includes(search));
+        }
+
+        if (dateFilter) {
+          filtered = filtered.filter((p) => p.date === dateFilter);
+        }
+
+        const grouped = filtered.reduce((acc, item) => {
+          if (!acc[item.date]) acc[item.date] = [];
+          acc[item.date].push(item);
+          return acc;
+        }, {});
+
+        const dates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+
+        if (!dates.length) {
+          historyContainer.innerHTML = '<div class="advice-empty">Aucune production enregistrée pour le moment.</div>';
+          return;
+        }
+
+        const cards = dates.map((date) => {
+          const items = grouped[date].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          const totalMinutes = items.reduce((sum, item) => sum + Number(item.realProductionMinutes || 0), 0);
+          const normalHours = Math.min(totalMinutes, 480);
+          const extraHours = Math.max(totalMinutes - 480, 0);
+          const refsTreated = items.reduce((sum, item) => sum + Number(item.totalRefs || 0), 0);
+          const refsRemaining = items.reduce((sum, item) => sum + Number(item.remainingRefs || 0), 0);
+
+          const listHtml = items.map((item) => `
+            <li class="day-item">
+              <div class="day-item-main">
+                <span class="name">${item.name} — ${item.code} — ${Number(item.totalRefs || 0)} références</span>
+                <span class="meta">Début ${item.startTime || '--:--'} • Fin ${item.endTime || '--:--'} • ${minutesToText(item.realProductionMinutes || 0)}</span>
+              </div>
+              <div class="rest">Reste: ${Number(item.remainingRefs || 0)}</div>
+              <div class="future-actions">
+                <button type="button" class="mini-btn secondary-btn" data-action="complete" data-id="${item.id}">Terminer</button>
+                <button type="button" class="mini-btn secondary-btn" data-action="clear-remaining" data-id="${item.id}">Supprimer le reste</button>
+                <button type="button" class="mini-btn danger-btn" data-action="delete-record" data-id="${item.id}">Supprimer</button>
+              </div>
+            </li>
+          `).join('');
+
+          return `
+            <div class="day-group">
+              <div class="day-header">
+                <div class="day-title">📅 ${formatDateLabel(date)}</div>
+                <div class="day-actions">
+                  <button type="button" class="mini-btn secondary-btn" data-close-date="${date}">Clôturer</button>
+                </div>
+              </div>
+
+              <ul class="day-list">${listHtml}</ul>
+
+              <div class="day-summary">
+                <div class="sum-box">
+                  <span class="label">Nombre de ventes traitées</span>
+                  <span class="value">${items.length}</span>
+                </div>
+                <div class="sum-box">
+                  <span class="label">Heure effectuée</span>
+                  <span class="value">${minutesToText(totalMinutes)}</span>
+                </div>
+                <div class="sum-box">
+                  <span class="label">Heures normales</span>
+                  <span class="value">${minutesToText(normalHours)}</span>
+                </div>
+                <div class="sum-box">
+                  <span class="label">Heures supplémentaires</span>
+                  <span class="value">${minutesToText(extraHours)}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        historyContainer.innerHTML = cards;
+
+        historyContainer.querySelectorAll('[data-action]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const { action, id } = button.dataset;
+            const target = state.productions.find((item) => String(item.id) === id);
+            if (!target) return;
+
+            if (action === 'complete') {
+              target.remainingRefs = 0;
+              safeWrite(STORAGE_KEYS.productions, state.productions);
+              renderHistory();
+              showToast('Vente terminée.');
+            }
+
+            if (action === 'clear-remaining') {
+              target.remainingRefs = 0;
+              safeWrite(STORAGE_KEYS.productions, state.productions);
+              renderHistory();
+              showToast('Références restantes supprimées.');
+            }
+
+            if (action === 'delete-record') {
+              state.productions = state.productions.filter((item) => String(item.id) !== id);
+              safeWrite(STORAGE_KEYS.productions, state.productions);
+              renderHistory();
+              showToast('Production supprimée.');
+            }
+          });
+        });
+
+        historyContainer.querySelectorAll('[data-close-date]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const date = button.dataset.closeDate;
+            closeDay(date);
+          });
+        });
+      }
+
+      function addFutureSale() {
+        const name = document.getElementById('futureName').value.trim();
+        const volume = Number(document.getElementById('futureVolume').value) || 0;
+        const code = document.getElementById('futureCode').value;
+
+        if (!name || volume <= 0) {
+          showToast('Nom et volume requis pour ajouter une vente.');
+          return;
+        }
+
+        const editId = document.getElementById('futureName').dataset.editId;
+
+        if (editId) {
+          state.futureSales = state.futureSales.map((sale) =>
+            String(sale.id) === String(editId)
+              ? { ...sale, name, volume, code }
+              : sale
+          );
+          delete document.getElementById('futureName').dataset.editId;
+          addFutureSaleBtn.textContent = 'Ajouter';
+        } else {
+          state.futureSales.push({
+            id: Date.now() + Math.random(),
+            name,
+            volume,
+            code
+          });
+        }
+
+        safeWrite(STORAGE_KEYS.futureSales, state.futureSales);
+        renderFutureSales();
+        document.getElementById('futureName').value = '';
+        document.getElementById('futureVolume').value = 0;
+        document.getElementById('futureCode').value = 'AL SIMPLE';
+
+        showToast('Vente à venir enregistrée.');
+      }
+
+      function closeDay(date) {
+        const records = state.productions.filter((item) => item.date === date);
+        if (!records.length) {
+          showToast('Aucune production à clôturer pour cette date.');
+          return;
+        }
+
+        const totalMinutes = records.reduce((sum, item) => sum + Number(item.realProductionMinutes || 0), 0);
+        const normalHours = Math.min(totalMinutes, 480);
+        const extraHours = Math.max(totalMinutes - 480, 0);
+        const totalRefs = records.reduce((sum, item) => sum + Number(item.totalRefs || 0), 0);
+        const remainingForTomorrow = records.reduce((sum, item) => sum + Number(item.remainingRefs || 0), 0);
+
+        const summary = {
+          date,
+          salesCount: records.length,
+          totalMinutes,
+          normalMinutes: normalHours,
+          extraMinutes: extraHours,
+          totalRefs,
+          remainingForTomorrow,
+          createdAt: new Date().toISOString()
+        };
+
+        state.closedDays = state.closedDays.filter((entry) => entry.date !== date);
+        state.closedDays.push(summary);
+        safeWrite(STORAGE_KEYS.closedDays, state.closedDays);
+
+        showToast(`Journée clôturée : ${formatDateLabel(date)}`);
+        renderHistory();
+      }
+
+      function initCapacitySimulation() {
+        const capacityStart = document.getElementById('capacityStart');
+        const capacityEnd = document.getElementById('capacityEnd');
+        const capacityCode = document.getElementById('capacityCode');
+        const capacityPause = document.getElementById('capacityPause');
+        const capacityOutput = document.getElementById('capacityOutput');
+
+        document.getElementById('capacityBtn').addEventListener('click', () => {
+          const result = calcCapacity(capacityStart.value, capacityEnd.value, capacityCode.value, capacityPause.checked);
+          capacityOutput.textContent = Math.round(result.refs).toString();
+        });
+      }
+
+      function bindEvents() {
+        document.getElementById('calculateBtn').addEventListener('click', calculateCurrentProduction);
+        document.getElementById('saveProductionBtn').addEventListener('click', saveProduction);
+        document.getElementById('resetFormBtn').addEventListener('click', resetCurrentForm);
+        document.getElementById('addFutureSaleBtn').addEventListener('click', addFutureSale);
+        document.getElementById('closeDayBtn').addEventListener('click', () => {
+          const currentDate = historyDateFilterInput.value || productionDateInput.value || new Date().toISOString().slice(0, 10);
+          closeDay(currentDate);
+        });
+
+        historySearchInput.addEventListener('input', renderHistory);
+        historyDateFilterInput.addEventListener('change', renderHistory);
+        productionCodeSelect.addEventListener('change', calculateCurrentProduction);
+        totalRefsInput.addEventListener('input', calculateCurrentProduction);
+        productionStartInput.addEventListener('input', calculateCurrentProduction);
+        productionEndInput.addEventListener('input', calculateCurrentProduction);
+        pause30Input.addEventListener('change', calculateCurrentProduction);
+        remainingRefsInput.addEventListener('input', () => {
+          const value = Number(remainingRefsInput.value) || 0;
+          document.getElementById('remainingRefsDisplay').textContent = formatNumber(value);
+        });
+
+        const futureName = document.getElementById('futureName');
+        const futureVolume = document.getElementById('futureVolume');
+        const futureCode = document.getElementById('futureCode');
+        const addBtn = document.getElementById('addFutureSaleBtn');
+
+        futureName.addEventListener('input', () => {
+          if (!futureName.dataset.editId) return;
+          if (!futureName.value.trim()) {
+            addBtn.textContent = 'Ajouter';
+            delete futureName.dataset.editId;
+          }
+        });
+      }
+
+      function initialize() {
+        loadData();
+        setDefaultDate();
+        renderFutureSales();
+        renderHistory();
+        initCapacitySimulation();
+        bindEvents();
+        resetCurrentForm();
+      }
+
+      initialize();
+    </script>
+  </body>
+</html>
